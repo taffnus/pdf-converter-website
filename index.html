@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EasyConvert — PDF zu PNG, in einem Request</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0f;
+    --bg-elevated:#111119;
+    --surface:#15151f;
+    --surface-hover:#1b1b28;
+    --border:rgba(139,92,246,0.18);
+    --border-strong:rgba(139,92,246,0.4);
+    --text:#f3f2f8;
+    --text-dim:#9997ab;
+    --text-dimmer:#67657a;
+    --purple:#8b5cf6;
+    --pink:#ec4899;
+    --gradient: linear-gradient(135deg, var(--purple), var(--pink));
+    --mono: 'JetBrains Mono', monospace;
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background:
+      radial-gradient(ellipse 700px 500px at 20% -10%, rgba(139,92,246,0.16), transparent),
+      radial-gradient(ellipse 600px 500px at 90% 10%, rgba(236,72,153,0.10), transparent),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--body);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .bg-grid{
+    position:fixed; inset:0; z-index:-1;
+    background-image:
+      linear-gradient(rgba(139,92,246,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(139,92,246,0.05) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 900px 600px at 50% 0%, black 40%, transparent 75%);
+  }
+
+  a{ color:inherit; text-decoration:none; }
+
+  .wrap{ max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  /* ---- Nav ---- */
+  nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:24px 0;
+  }
+  .logo{
+    font-family:var(--display); font-weight:600; font-size:19px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .logo-mark{
+    width:22px; height:22px; border-radius:6px;
+    background:var(--gradient);
+    display:inline-block;
+  }
+  .nav-links{ display:flex; gap:32px; align-items:center; }
+  .nav-links a{ color:var(--text-dim); font-size:14px; transition:color .15s; }
+  .nav-links a:hover{ color:var(--text); }
+  .nav-cta{
+    background:var(--surface); border:1px solid var(--border);
+    padding:9px 18px; border-radius:8px; font-size:14px; font-weight:500;
+    transition:border-color .15s, background .15s;
+  }
+  .nav-cta:hover{ border-color:var(--border-strong); background:var(--surface-hover); }
+
+  /* ---- Hero ---- */
+  .hero{
+    padding:88px 0 64px;
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:56px; align-items:center;
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--mono); font-size:12.5px; color:var(--purple);
+    background:rgba(139,92,246,0.1); border:1px solid var(--border);
+    padding:6px 12px; border-radius:100px; margin-bottom:22px;
+  }
+  .eyebrow::before{
+    content:''; width:6px; height:6px; border-radius:50%;
+    background:var(--pink);
+  }
+  h1{
+    font-family:var(--display); font-weight:700;
+    font-size:clamp(34px, 4.6vw, 54px);
+    line-height:1.08; letter-spacing:-0.02em;
+    margin-bottom:20px;
+  }
+  h1 .accent{
+    background:var(--gradient);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero p{
+    color:var(--text-dim); font-size:17px; max-width:480px; margin-bottom:32px;
+  }
+  .cta-row{ display:flex; gap:12px; flex-wrap:wrap; }
+  .btn-primary, .btn-secondary{
+    padding:13px 22px; border-radius:9px; font-size:14.5px; font-weight:600;
+    display:inline-flex; align-items:center; gap:8px;
+    transition:transform .15s, box-shadow .15s, border-color .15s;
+  }
+  .btn-primary{
+    background:var(--gradient); color:#fff;
+    box-shadow:0 0 0 1px rgba(255,255,255,0.06) inset, 0 8px 24px -8px rgba(139,92,246,0.55);
+  }
+  .btn-primary:hover{ transform:translateY(-1px); }
+  .btn-secondary{
+    background:transparent; border:1px solid var(--border); color:var(--text);
+  }
+  .btn-secondary:hover{ border-color:var(--border-strong); }
+  .hero-note{ margin-top:14px; font-size:13px; color:var(--text-dimmer); }
+
+  /* ---- Signature visual: PDF -> PNG morph ---- */
+  .morph-card{
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:16px; padding:40px 24px;
+    display:flex; align-items:center; justify-content:center; gap:20px;
+    position:relative; overflow:hidden;
+    min-height:220px;
+  }
+  .morph-card::before{
+    content:''; position:absolute; inset:-40%;
+    background:radial-gradient(circle, rgba(139,92,246,0.16), transparent 60%);
+    animation:drift 7s ease-in-out infinite;
+  }
+  @keyframes drift{
+    0%,100%{ transform:translate(0,0); }
+    50%{ transform:translate(6%, -6%); }
+  }
+  .file-icon{ position:relative; z-index:1; text-align:center; }
+  .file-icon svg{ display:block; margin:0 auto 10px; }
+  .file-icon span{
+    font-family:var(--mono); font-size:12px; color:var(--text-dim);
+  }
+  .morph-arrow{ position:relative; z-index:1; }
+  .morph-arrow svg{ display:block; }
+  .dash-line{
+    stroke-dasharray:6 6;
+    animation:dash 1.4s linear infinite;
+  }
+  @keyframes dash{ to{ stroke-dashoffset:-24; } }
+
+  @media (prefers-reduced-motion: reduce){
+    .morph-card::before, .dash-line{ animation:none; }
+  }
+
+  /* ---- Feature strip ---- */
+  .features{
+    padding:48px 0 88px;
+    display:grid; grid-template-columns:repeat(3, 1fr); gap:1px;
+    background:var(--border); border:1px solid var(--border); border-radius:14px;
+    overflow:hidden;
+  }
+  .feature{
+    background:var(--bg-elevated); padding:28px 26px;
+  }
+  .feature h3{
+    font-family:var(--display); font-size:16px; font-weight:600; margin-bottom:8px;
+  }
+  .feature p{ color:var(--text-dim); font-size:14px; }
+
+  /* ---- Section heading ---- */
+  .section-head{ text-align:center; max-width:520px; margin:0 auto 44px; }
+  .section-head .eyebrow{ margin-bottom:16px; }
+  .section-head h2{
+    font-family:var(--display); font-size:clamp(26px,3vw,34px);
+    font-weight:600; letter-spacing:-0.01em; margin-bottom:12px;
+  }
+  .section-head p{ color:var(--text-dim); font-size:15px; }
+
+  /* ---- Pricing ---- */
+  .pricing{ padding:20px 0 96px; }
+  .price-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:20px; max-width:760px; margin:0 auto;
+  }
+  .price-card{
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:16px; padding:32px 28px; position:relative;
+  }
+  .price-card.pro{ border-color:var(--border-strong); }
+  .price-card.pro::before{
+    content:'Am beliebtesten'; position:absolute; top:-11px; right:24px;
+    font-family:var(--mono); font-size:11px; color:#fff;
+    background:var(--gradient); padding:4px 10px; border-radius:100px;
+  }
+  .price-card h3{ font-family:var(--display); font-size:18px; font-weight:600; margin-bottom:6px; }
+  .price-amount{ font-family:var(--display); font-size:38px; font-weight:700; margin:14px 0 4px; }
+  .price-amount span{ font-size:14px; font-weight:500; color:var(--text-dim); }
+  .price-sub{ color:var(--text-dim); font-size:13.5px; margin-bottom:22px; }
+  .price-list{ list-style:none; margin-bottom:26px; }
+  .price-list li{
+    display:flex; align-items:flex-start; gap:10px;
+    font-size:14px; color:var(--text-dim); padding:7px 0;
+  }
+  .price-list li::before{
+    content:''; width:6px; height:6px; margin-top:7px; border-radius:50%;
+    background:var(--purple); flex-shrink:0;
+  }
+  .price-card .btn-primary, .price-card .btn-secondary{ width:100%; justify-content:center; }
+  .price-footnote{ font-size:12px; color:var(--text-dimmer); margin-top:12px; text-align:center; }
+
+  /* ---- Code example ---- */
+  .code-section{ padding:20px 0 96px; }
+  .code-card{
+    background:var(--bg-elevated); border:1px solid var(--border);
+    border-radius:14px; overflow:hidden; max-width:640px; margin:0 auto;
+  }
+  .code-head{
+    display:flex; align-items:center; gap:8px; padding:12px 18px;
+    border-bottom:1px solid var(--border);
+  }
+  .dot{ width:9px; height:9px; border-radius:50%; background:var(--text-dimmer); opacity:.5; }
+  .code-head span{ font-family:var(--mono); font-size:12px; color:var(--text-dim); margin-left:6px; }
+  pre{
+    font-family:var(--mono); font-size:13px; line-height:1.7;
+    padding:22px 20px; overflow-x:auto; color:var(--text-dim);
+  }
+  pre .k{ color:var(--purple); }
+  pre .s{ color:var(--pink); }
+  pre .c{ color:var(--text-dimmer); }
+
+  /* ---- Footer ---- */
+  footer{
+    border-top:1px solid var(--border); padding:32px 0; margin-top:40px;
+    display:flex; justify-content:space-between; align-items:center;
+    color:var(--text-dimmer); font-size:13px;
+  }
+
+  @media (max-width:760px){
+    .hero{ grid-template-columns:1fr; padding-top:56px; }
+    .hero p{ max-width:none; }
+    .features{ grid-template-columns:1fr; }
+    .price-grid{ grid-template-columns:1fr; }
+    .nav-links{ display:none; }
+  }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+
+<div class="wrap">
+  <nav>
+    <div class="logo"><span class="logo-mark"></span>EasyConvert</div>
+    <div class="nav-links">
+      <a href="#features">Funktionen</a>
+      <a href="#pricing">Preise</a>
+      <a href="#docs">API</a>
+    </div>
+    <a href="#pricing" class="nav-cta">API-Key holen</a>
+  </nav>
+
+  <section class="hero">
+    <div>
+      <div class="eyebrow">Für Make &amp; Zapier</div>
+      <h1>PDF zu PNG.<br>In <span class="accent">einem Request.</span></h1>
+      <p>Eine kleine, verlässliche Konvertierungs-API für No-Code-Workflows. Datei rein, Bild sofort zurück — keine Warteschlangen, keine Timeouts, keine Überraschungen.</p>
+      <div class="cta-row">
+        <a href="#pricing" class="btn-primary">200 Credits gratis holen</a>
+        <a href="#docs" class="btn-secondary">API ansehen</a>
+      </div>
+      <div class="hero-note">Keine Kreditkarte nötig · Bis zu 5 Seiten pro Datei</div>
+    </div>
+
+    <div class="morph-card">
+      <div class="file-icon">
+        <svg width="52" height="64" viewBox="0 0 52 64" fill="none">
+          <path d="M4 2H34L48 16V60C48 61.1 47.1 62 46 62H6C4.9 62 4 61.1 4 60V4C4 2.9 4.9 2 4 2Z" fill="#1b1b28" stroke="#8b5cf6" stroke-width="1.6"/>
+          <path d="M34 2V16H48" fill="none" stroke="#8b5cf6" stroke-width="1.6"/>
+          <text x="26" y="42" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#ec4899" font-weight="500">PDF</text>
+        </svg>
+        <span>document.pdf</span>
+      </div>
+
+      <div class="morph-arrow">
+        <svg width="56" height="24" viewBox="0 0 56 24" fill="none">
+          <line class="dash-line" x1="2" y1="12" x2="44" y2="12" stroke="#8b5cf6" stroke-width="2"/>
+          <path d="M40 6L48 12L40 18" stroke="#ec4899" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <div class="file-icon">
+        <svg width="52" height="64" viewBox="0 0 52 64" fill="none">
+          <rect x="4" y="4" width="44" height="56" rx="4" fill="#1b1b28" stroke="#ec4899" stroke-width="1.6"/>
+          <circle cx="17" cy="22" r="4.5" fill="#8b5cf6"/>
+          <path d="M8 46L20 34L28 42L34 34L44 46" stroke="#8b5cf6" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>document.png</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="features" id="features">
+    <div class="feature">
+      <h3>Gebaut für kleine Dateien</h3>
+      <p>Jeder Request ist in unter einer Sekunde fertig — passt bequem in die Timeouts von Make und Zapier.</p>
+    </div>
+    <div class="feature">
+      <h3>Ein Request, eine Antwort</h3>
+      <p>PDF senden, PNG direkt zurückbekommen. Keine Webhooks einrichten, kein Abfragen von Status.</p>
+    </div>
+    <div class="feature">
+      <h3>Klare Limits, keine Überraschungen</h3>
+      <p>Jeder Plan hat ein sichtbares Limit. Nichts scheitert im Stillen — du siehst immer, woran es liegt.</p>
+    </div>
+  </section>
+
+  <section class="pricing" id="pricing">
+    <div class="section-head">
+      <div class="eyebrow" style="margin:0 auto 16px; width:fit-content;">Preise</div>
+      <h2>Einfach anfangen, einfach bleiben</h2>
+      <p>Kein Abo zum Testen. Upgrade nur, wenn du es wirklich brauchst.</p>
+    </div>
+
+    <div class="price-grid">
+      <div class="price-card">
+        <h3>Free</h3>
+        <div class="price-amount">0 €</div>
+        <div class="price-sub">200 Credits, einmalig</div>
+        <ul class="price-list">
+          <li>200 PDF-zu-PNG-Konvertierungen</li>
+          <li>Bis zu 5 Seiten / 10 MB pro Datei</li>
+          <li>Credits verfallen nicht</li>
+          <li>Keine Kreditkarte nötig</li>
+        </ul>
+        <a href="#" class="btn-secondary">Kostenlos starten</a>
+      </div>
+
+      <div class="price-card pro">
+        <h3>Pro</h3>
+        <div class="price-amount">5 € <span>/ Monat</span></div>
+        <div class="price-sub">Unbegrenzte Konvertierungen*</div>
+        <ul class="price-list">
+          <li>Unbegrenzte PDF-zu-PNG-Konvertierungen*</li>
+          <li>Bis zu 5 Seiten / 10 MB pro Datei</li>
+          <li>Priorisierter E-Mail-Support</li>
+          <li>Jederzeit kündbar</li>
+        </ul>
+        <a href="#" class="btn-primary">Pro werden</a>
+      </div>
+    </div>
+    <div class="price-footnote">*Fair-Use-Grenze von 2.000 Konvertierungen/Monat schützt die Stabilität für alle. Brauchst du mehr, schreib uns einfach.</div>
+  </section>
+
+  <section class="code-section" id="docs">
+    <div class="section-head">
+      <div class="eyebrow" style="margin:0 auto 16px; width:fit-content;">API</div>
+      <h2>In zwei Minuten eingebunden</h2>
+      <p>Ein HTTP-Modul in Make oder Zapier reicht.</p>
+    </div>
+    <div class="code-card">
+      <div class="code-head">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span>HTTP-Modul-Konfiguration</span>
+      </div>
+      <pre><span class="k">POST</span> https://api.easyconvert.dev/convert
+
+<span class="c"># Header</span>
+X-API-Key: <span class="s">dein_api_key</span>
+
+<span class="c"># Body (multipart/form-data)</span>
+file: <span class="s">deine_datei.pdf</span>
+
+<span class="c"># Antwort</span>
+<span class="k">200 OK</span>  →  image/png</pre>
+    </div>
+  </section>
+
+  <footer>
+    <div>© 2026 EasyConvert</div>
+    <div>Gebaut für Automatisierer.</div>
+  </footer>
+</div>
+
+</body>
+</html>
