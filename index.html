@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EasyConvert — PDF zu PNG, in einem Request</title>
+<title>EasyConvert — PDF to PNG, in one request</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -108,7 +108,7 @@
   .cta-row{ display:flex; gap:12px; flex-wrap:wrap; }
   .btn-primary, .btn-secondary{
     padding:13px 22px; border-radius:9px; font-size:14.5px; font-weight:600;
-    display:inline-flex; align-items:center; gap:8px;
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
     transition:transform .15s, box-shadow .15s, border-color .15s;
   }
   .btn-primary{
@@ -173,7 +173,7 @@
 
   /* ---- Section heading ---- */
   .section-head{ text-align:center; max-width:520px; margin:0 auto 44px; }
-  .section-head .eyebrow{ margin-bottom:16px; }
+  .section-head .eyebrow{ margin:0 auto 16px; width:fit-content; }
   .section-head h2{
     font-family:var(--display); font-size:clamp(26px,3vw,34px);
     font-weight:600; letter-spacing:-0.01em; margin-bottom:12px;
@@ -184,22 +184,20 @@
   .pricing{ padding:20px 0 96px; }
   .price-grid{
     display:grid; grid-template-columns:1fr 1fr; gap:20px; max-width:760px; margin:0 auto;
+    align-items:stretch;
   }
   .price-card{
     background:var(--surface); border:1px solid var(--border);
-    border-radius:16px; padding:32px 28px; position:relative;
+    border-radius:16px; padding:32px 28px;
+    display:flex; flex-direction:column;
+    height:100%;
   }
   .price-card.pro{ border-color:var(--border-strong); }
-  .price-card.pro::before{
-    content:'Am beliebtesten'; position:absolute; top:-11px; right:24px;
-    font-family:var(--mono); font-size:11px; color:#fff;
-    background:var(--gradient); padding:4px 10px; border-radius:100px;
-  }
   .price-card h3{ font-family:var(--display); font-size:18px; font-weight:600; margin-bottom:6px; }
   .price-amount{ font-family:var(--display); font-size:38px; font-weight:700; margin:14px 0 4px; }
   .price-amount span{ font-size:14px; font-weight:500; color:var(--text-dim); }
   .price-sub{ color:var(--text-dim); font-size:13.5px; margin-bottom:22px; }
-  .price-list{ list-style:none; margin-bottom:26px; }
+  .price-list{ list-style:none; margin-bottom:26px; flex-grow:1; }
   .price-list li{
     display:flex; align-items:flex-start; gap:10px;
     font-size:14px; color:var(--text-dim); padding:7px 0;
@@ -208,7 +206,7 @@
     content:''; width:6px; height:6px; margin-top:7px; border-radius:50%;
     background:var(--purple); flex-shrink:0;
   }
-  .price-card .btn-primary, .price-card .btn-secondary{ width:100%; justify-content:center; }
+  .price-card .btn-primary, .price-card .btn-secondary{ width:100%; margin-top:auto; }
   .price-footnote{ font-size:12px; color:var(--text-dimmer); margin-top:12px; text-align:center; }
 
   /* ---- Code example ---- */
@@ -254,23 +252,23 @@
   <nav>
     <div class="logo"><span class="logo-mark"></span>EasyConvert</div>
     <div class="nav-links">
-      <a href="#features">Funktionen</a>
-      <a href="#pricing">Preise</a>
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
       <a href="#docs">API</a>
     </div>
-    <a href="#pricing" class="nav-cta">API-Key holen</a>
+    <a href="#pricing" class="nav-cta">Get API key</a>
   </nav>
 
   <section class="hero">
     <div>
-      <div class="eyebrow">Für Make &amp; Zapier</div>
-      <h1>PDF zu PNG.<br>In <span class="accent">einem Request.</span></h1>
-      <p>Eine kleine, verlässliche Konvertierungs-API für No-Code-Workflows. Datei rein, Bild sofort zurück — keine Warteschlangen, keine Timeouts, keine Überraschungen.</p>
+      <div class="eyebrow">For Make &amp; Zapier</div>
+      <h1>PDF to PNG.<br>In <span class="accent">one request.</span></h1>
+      <p>A small, dependable conversion API built for no-code workflows. File in, image back — no queues, no timeouts, no surprises.</p>
       <div class="cta-row">
-        <a href="#pricing" class="btn-primary">200 Credits gratis holen</a>
-        <a href="#docs" class="btn-secondary">API ansehen</a>
+        <a href="#pricing" class="btn-primary">Get 200 free credits</a>
+        <a href="#docs" class="btn-secondary">View the API</a>
       </div>
-      <div class="hero-note">Keine Kreditkarte nötig · Bis zu 5 Seiten pro Datei</div>
+      <div class="hero-note">No credit card required · Up to 5 pages per file</div>
     </div>
 
     <div class="morph-card">
@@ -303,83 +301,83 @@
 
   <section class="features" id="features">
     <div class="feature">
-      <h3>Gebaut für kleine Dateien</h3>
-      <p>Jeder Request ist in unter einer Sekunde fertig — passt bequem in die Timeouts von Make und Zapier.</p>
+      <h3>Built for small files</h3>
+      <p>Every request finishes in under a second, so it fits comfortably inside Make and Zapier's own timeouts.</p>
     </div>
     <div class="feature">
-      <h3>Ein Request, eine Antwort</h3>
-      <p>PDF senden, PNG direkt zurückbekommen. Keine Webhooks einrichten, kein Abfragen von Status.</p>
+      <h3>One request, one response</h3>
+      <p>Send a PDF, get a PNG back immediately. No webhooks to configure, no status polling.</p>
     </div>
     <div class="feature">
-      <h3>Klare Limits, keine Überraschungen</h3>
-      <p>Jeder Plan hat ein sichtbares Limit. Nichts scheitert im Stillen — du siehst immer, woran es liegt.</p>
+      <h3>Clear limits, no surprises</h3>
+      <p>Every plan has a plain, visible limit. Nothing fails silently — you always see why.</p>
     </div>
   </section>
 
   <section class="pricing" id="pricing">
     <div class="section-head">
-      <div class="eyebrow" style="margin:0 auto 16px; width:fit-content;">Preise</div>
-      <h2>Einfach anfangen, einfach bleiben</h2>
-      <p>Kein Abo zum Testen. Upgrade nur, wenn du es wirklich brauchst.</p>
+      <div class="eyebrow">Pricing</div>
+      <h2>Simple to start, simple to keep</h2>
+      <p>No subscription needed to try it. Upgrade only when you actually need to.</p>
     </div>
 
     <div class="price-grid">
       <div class="price-card">
         <h3>Free</h3>
-        <div class="price-amount">0 €</div>
-        <div class="price-sub">200 Credits, einmalig</div>
+        <div class="price-amount">$0</div>
+        <div class="price-sub">200 credits, one-time</div>
         <ul class="price-list">
-          <li>200 PDF-zu-PNG-Konvertierungen</li>
-          <li>Bis zu 5 Seiten / 10 MB pro Datei</li>
-          <li>Credits verfallen nicht</li>
-          <li>Keine Kreditkarte nötig</li>
+          <li>200 PDF-to-PNG conversions</li>
+          <li>Up to 5 pages / 10 MB per file</li>
+          <li>Credits never expire</li>
+          <li>No credit card required</li>
         </ul>
-        <a href="#" class="btn-secondary">Kostenlos starten</a>
+        <a href="#" class="btn-secondary">Start for free</a>
       </div>
 
       <div class="price-card pro">
         <h3>Pro</h3>
-        <div class="price-amount">5 € <span>/ Monat</span></div>
-        <div class="price-sub">Unbegrenzte Konvertierungen*</div>
+        <div class="price-amount">$5 <span>/ month</span></div>
+        <div class="price-sub">Unlimited conversions*</div>
         <ul class="price-list">
-          <li>Unbegrenzte PDF-zu-PNG-Konvertierungen*</li>
-          <li>Bis zu 5 Seiten / 10 MB pro Datei</li>
-          <li>Priorisierter E-Mail-Support</li>
-          <li>Jederzeit kündbar</li>
+          <li>Unlimited PDF-to-PNG conversions*</li>
+          <li>Up to 5 pages / 10 MB per file</li>
+          <li>Priority email support</li>
+          <li>Cancel anytime</li>
         </ul>
-        <a href="#" class="btn-primary">Pro werden</a>
+        <a href="#" class="btn-primary">Go Pro</a>
       </div>
     </div>
-    <div class="price-footnote">*Fair-Use-Grenze von 2.000 Konvertierungen/Monat schützt die Stabilität für alle. Brauchst du mehr, schreib uns einfach.</div>
+    <div class="price-footnote">*A fair-use limit of 2,000 conversions/month keeps the service stable for everyone. Need more? Just reach out.</div>
   </section>
 
   <section class="code-section" id="docs">
     <div class="section-head">
-      <div class="eyebrow" style="margin:0 auto 16px; width:fit-content;">API</div>
-      <h2>In zwei Minuten eingebunden</h2>
-      <p>Ein HTTP-Modul in Make oder Zapier reicht.</p>
+      <div class="eyebrow">API</div>
+      <h2>Wired up in two minutes</h2>
+      <p>One HTTP module in Make or Zapier is all it takes.</p>
     </div>
     <div class="code-card">
       <div class="code-head">
         <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-        <span>HTTP-Modul-Konfiguration</span>
+        <span>HTTP module configuration</span>
       </div>
       <pre><span class="k">POST</span> https://api.easyconvert.dev/convert
 
 <span class="c"># Header</span>
-X-API-Key: <span class="s">dein_api_key</span>
+X-API-Key: <span class="s">your_api_key</span>
 
 <span class="c"># Body (multipart/form-data)</span>
-file: <span class="s">deine_datei.pdf</span>
+file: <span class="s">your_file.pdf</span>
 
-<span class="c"># Antwort</span>
+<span class="c"># Response</span>
 <span class="k">200 OK</span>  →  image/png</pre>
     </div>
   </section>
 
   <footer>
     <div>© 2026 EasyConvert</div>
-    <div>Gebaut für Automatisierer.</div>
+    <div>Built for automators.</div>
   </footer>
 </div>
 
