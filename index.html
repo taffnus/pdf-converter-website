@@ -193,16 +193,22 @@
   /* ---- Pricing ---- */
   .pricing{ padding:20px 0 96px; }
   .price-grid{
-    display:grid; grid-template-columns:1fr 1fr; gap:20px; max-width:760px; margin:0 auto;
+    display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px; max-width:940px; margin:0 auto;
     align-items:stretch;
   }
   .price-card{
+    position:relative;
     background:var(--surface); border:1px solid var(--border);
     border-radius:16px; padding:32px 28px;
     display:flex; flex-direction:column;
     height:100%;
   }
   .price-card.pro{ border-color:var(--border-strong); }
+  .price-card.pro::before{
+    content:'Most popular'; position:absolute; top:-11px; right:24px;
+    font-family:var(--mono); font-size:11px; color:#fff;
+    background:var(--gradient); padding:4px 10px; border-radius:100px; white-space:nowrap;
+  }
   .price-card h3{ font-family:var(--display); font-size:18px; font-weight:600; margin-bottom:6px; }
   .price-amount{ font-family:var(--display); font-size:38px; font-weight:700; margin:14px 0 4px; }
   .price-amount span{ font-size:14px; font-weight:500; color:var(--text-dim); }
@@ -218,15 +224,6 @@
   }
   .price-card .btn-primary, .price-card .btn-secondary{ width:100%; margin-top:auto; }
   .price-footnote{ font-size:12px; color:var(--text-dimmer); margin-top:12px; text-align:center; }
-
-  .enterprise-card{
-    max-width:760px; margin:20px auto 0;
-    background:var(--surface); border:1px solid var(--border);
-    border-radius:16px; padding:26px 28px;
-    display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;
-  }
-  .enterprise-card h3{ font-family:var(--display); font-size:17px; font-weight:600; margin-bottom:6px; }
-  .enterprise-card p{ color:var(--text-dim); font-size:14px; max-width:440px; }
 
   /* ---- Code example ---- */
   .code-section{ padding:20px 0 96px; }
@@ -280,6 +277,8 @@
     .features{ grid-template-columns:1fr; }
     .price-grid{ grid-template-columns:1fr; }
     .nav-links{ display:none; }
+    footer{ flex-direction:column; gap:14px; text-align:center; }
+    footer > div:last-child{ justify-content:center; flex-wrap:wrap; row-gap:8px; }
   }
 </style>
 </head>
@@ -388,16 +387,21 @@
         </ul>
         <a href="login.html" class="btn-primary">Go Pro</a>
       </div>
+
+      <div class="price-card">
+        <h3>Enterprise</h3>
+        <div class="price-amount">Custom</div>
+        <div class="price-sub">For teams with heavier workloads</div>
+        <ul class="price-list">
+          <li>Higher rate limits</li>
+          <li>Custom file size / page limits</li>
+          <li>Dedicated support</li>
+          <li>Tailored onboarding</li>
+        </ul>
+        <a href="mailto:edeka130208@gmail.com?subject=EasyConvert%20Enterprise" class="btn-secondary">Contact us</a>
+      </div>
     </div>
     <div class="price-footnote">*A fair-use limit of 2,000 conversions/month keeps the service stable for everyone. Need more? Just reach out.</div>
-
-    <div class="enterprise-card">
-      <div>
-        <h3>Enterprise</h3>
-        <p>Higher limits, custom support, and a setup tailored to your workflow.</p>
-      </div>
-      <a href="mailto:edeka130208@gmail.com?subject=EasyConvert%20Enterprise" class="btn-secondary">Contact us</a>
-    </div>
   </section>
 
   <section class="code-section" id="docs">
