@@ -170,6 +170,11 @@
     background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.3); color:var(--green);
   }
 
+  .manage-link{
+    font-size:12.5px; color:var(--text-dimmer); display:inline-block; margin-top:14px;
+  }
+  .manage-link:hover{ color:var(--text-dim); text-decoration:underline; }
+
   @media (max-width:640px){
     .grid{ grid-template-columns:1fr; }
     .nav-right .user-email{ display:none; }
@@ -249,6 +254,7 @@
         <div class="card">
           <h3>Plan</h3>
           <span class="plan-badge ${isPro ? "pro" : ""}">${planLabel}</span>
+          ${isPro ? `<a href="#" id="manage-billing-link" class="manage-link">Manage subscription</a>` : ""}
         </div>
         <div class="card">
           ${usageCardHtml}
@@ -292,6 +298,28 @@
           alert(err.message || "Something went wrong starting checkout. Please try again.");
           upgradeBtn.disabled = false;
           upgradeBtn.textContent = "Go Pro";
+        }
+      });
+    }
+
+    const manageLink = document.getElementById("manage-billing-link");
+    if (manageLink) {
+      manageLink.addEventListener("click", async (e) => {
+        e.preventDefault();
+        const originalText = manageLink.textContent;
+        manageLink.textContent = "Loading…";
+        try {
+          const { data: { session } } = await sb.auth.getSession();
+          const res = await fetch(`${API_BASE_URL}/billing/create-portal-session`, {
+            method: "POST",
+            headers: { Authorization: `Bearer ${session.access_token}` },
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.detail || "Could not open the billing portal.");
+          window.location.href = data.url;
+        } catch (err) {
+          alert(err.message || "Something went wrong. Please try again.");
+          manageLink.textContent = originalText;
         }
       });
     }
