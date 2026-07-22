@@ -175,6 +175,11 @@
   }
   .manage-link:hover{ color:var(--text-dim); text-decoration:underline; }
 
+  footer{
+    text-align:center; padding:24px; color:var(--text-dimmer); font-size:13px;
+  }
+  footer a{ color:inherit; }
+
   @media (max-width:640px){
     .grid{ grid-template-columns:1fr; }
     .nav-right .user-email{ display:none; }
@@ -197,6 +202,8 @@
 <main class="wrap" id="main-content">
   <div class="loading" id="loading">Loading your dashboard …</div>
 </main>
+
+<footer>© 2026 EasyConvert · <a href="impressum.html">Imprint</a> · <a href="datenschutz.html">Privacy Policy</a></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-client.js"></script>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Datenschutzerklärung — EasyConvert</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0f;
+    --bg-elevated:#111119;
+    --surface:#15151f;
+    --border:rgba(139,92,246,0.18);
+    --border-strong:rgba(139,92,246,0.4);
+    --text:#f3f2f8;
+    --text-dim:#9997ab;
+    --text-dimmer:#67657a;
+    --purple:#8b5cf6;
+    --pink:#ec4899;
+    --gradient: linear-gradient(135deg, var(--purple), var(--pink));
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  body{
+    background:
+      radial-gradient(ellipse 700px 500px at 20% -10%, rgba(139,92,246,0.16), transparent),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--body);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{ color:var(--purple); text-decoration:none; }
+  a:hover{ text-decoration:underline; }
+
+  .wrap{ max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:24px 0;
+  }
+  .logo{
+    font-family:var(--display); font-weight:600; font-size:19px;
+    display:flex; align-items:center; gap:8px; color:var(--text);
+  }
+  .logo-mark{
+    width:22px; height:22px; border-radius:6px;
+    background:var(--gradient);
+    display:inline-block;
+  }
+
+  main{ max-width:640px; margin:0 auto; padding:32px 24px 96px; }
+
+  h1{
+    font-family:var(--display); font-weight:700; font-size:clamp(28px, 4vw, 36px);
+    letter-spacing:-0.01em; margin-bottom:12px;
+  }
+  .updated{ color:var(--text-dimmer); font-size:13px; margin-bottom:32px; }
+  h2{
+    font-family:var(--display); font-weight:600; font-size:19px;
+    margin:40px 0 12px;
+  }
+  h3{
+    font-family:var(--display); font-weight:600; font-size:15px;
+    margin:20px 0 8px; color:var(--text);
+  }
+  p{ color:var(--text-dim); font-size:15px; margin-bottom:12px; }
+  ul{ color:var(--text-dim); font-size:15px; margin:0 0 12px 20px; }
+  li{ margin-bottom:6px; }
+
+  section{
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:14px; padding:8px 28px 28px;
+  }
+
+  footer{
+    text-align:center; padding:24px; color:var(--text-dimmer); font-size:13px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <a href="index.html" class="logo"><span class="logo-mark"></span>EasyConvert</a>
+  </nav>
+</div>
+
+<main>
+  <h1>Datenschutzerklärung</h1>
+  <p class="updated">Stand: Juli 2026</p>
+
+  <section>
+    <h2>1. Verantwortlicher</h2>
+    <p>Yunus Ak, Kreuzfeldstraße 34, 45473 Mülheim an der Ruhr, Deutschland<br>E-Mail: edeka130208@gmail.com</p>
+
+    <h2>2. Übersicht der Verarbeitungen</h2>
+    <p>EasyConvert ist eine PDF-zu-PNG-Konvertierungs-API mit Nutzerkonto. Für den Betrieb verarbeite ich personenbezogene Daten bei der Registrierung, bei der Nutzung der API sowie bei Zahlungen für den Pro-Plan. Externe Dienstleister sind daran als Auftragsverarbeiter bzw. eigenständig Verantwortliche beteiligt (siehe Abschnitt 6).</p>
+
+    <h2>3. Registrierung und Nutzerkonto</h2>
+    <p>Bei der Registrierung erhebe ich E-Mail-Adresse und Passwort (Passwort wird verschlüsselt gespeichert). Zusätzlich werden ein automatisch erzeugter API-Key, dein Plan (Free/Pro), verbleibende Credits sowie die monatliche Nutzung gespeichert. Die Authentifizierung erfolgt über den Dienst Supabase (Supabase, Inc.).</p>
+    <p><strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. b DSGVO (Erfüllung des Nutzungsvertrags).</p>
+
+    <h2>4. Nutzung der Konvertierungs-API</h2>
+    <p>Bei jedem API-Aufruf wird der übermittelte API-Key gegen die Datenbank geprüft und die verbleibenden Credits bzw. die monatliche Nutzung aktualisiert. Hochgeladene PDF-Dateien werden nur temporär zur Konvertierung verarbeitet und danach unmittelbar wieder gelöscht — sie werden nicht dauerhaft gespeichert.</p>
+    <p><strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. b DSGVO.</p>
+
+    <h2>5. Zahlungsabwicklung (Pro-Plan)</h2>
+    <p>Zahlungen für den Pro-Plan wickle ich über den Zahlungsdienstleister Stripe ab. Zahlungsdaten (z. B. Kreditkartendaten) werden ausschließlich von Stripe erhoben und verarbeitet — ich selbst erhalte und speichere keine vollständigen Zahlungsdaten. Von Stripe erhalte ich lediglich eine Kunden- und Abo-Kennung, um deinen Account-Status (Free/Pro) zu aktualisieren.</p>
+    <p><strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. b DSGVO.</p>
+
+    <h2>6. Eingesetzte Dienstleister</h2>
+    <ul>
+      <li><strong>Supabase, Inc.</strong> — Nutzerkonten, Login und Datenbank</li>
+      <li><strong>Stripe Payments Europe, Ltd. / Stripe, Inc.</strong> — Zahlungsabwicklung für den Pro-Plan</li>
+      <li><strong>Render Services, Inc.</strong> — Hosting der Konvertierungs-API</li>
+      <li><strong>Cloudflare, Inc.</strong> — Hosting/Auslieferung dieser Website</li>
+    </ul>
+    <p>Diese Dienstleister können Daten auch außerhalb der EU/des EWR (insb. USA) verarbeiten. Soweit dies der Fall ist, setzen die jeweiligen Anbieter geeignete Garantien ein (z. B. EU-Standardvertragsklauseln), um ein angemessenes Datenschutzniveau sicherzustellen.</p>
+
+    <h2>7. Cookies und lokaler Speicher</h2>
+    <p>Nach dem Login speichert dein Browser über Supabase ein Sitzungs-Token im lokalen Speicher (localStorage), damit du eingeloggt bleibst. Dies ist technisch notwendig für die Funktion des Nutzerkontos und keine Trackingfunktion. Ich setze keine Analyse- oder Marketing-Cookies ein.</p>
+
+    <h2>8. Speicherdauer</h2>
+    <p>Konto- und Nutzungsdaten werden gespeichert, solange dein Konto besteht. Nach Löschung des Kontos werden die Daten innerhalb einer angemessenen Frist gelöscht, soweit keine gesetzlichen Aufbewahrungspflichten (z. B. handels- und steuerrechtliche Aufbewahrungsfristen für Rechnungsdaten) entgegenstehen.</p>
+
+    <h2>9. Deine Rechte</h2>
+    <p>Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit sowie Widerspruch gegen die Verarbeitung deiner Daten. Wende dich dazu einfach an die oben genannte E-Mail-Adresse. Außerdem hast du das Recht, dich bei einer Datenschutzaufsichtsbehörde zu beschweren, z. B. bei der Landesbeauftragten für Datenschutz und Informationsfreiheit Nordrhein-Westfalen.</p>
+
+    <h2>10. Automatisierte Entscheidungsfindung</h2>
+    <p>Es findet keine automatisierte Entscheidungsfindung im Sinne von Art. 22 DSGVO statt. Die automatische Prüfung von Credits/Nutzungslimits ist eine reine technische Kontingentprüfung ohne rechtliche oder ähnlich erhebliche Auswirkung im Sinne dieser Vorschrift.</p>
+  </section>
+</main>
+
+<footer>
+  <a href="index.html">Home</a> · <a href="impressum.html">Impressum</a>
+</footer>
+</body>
+</html>
