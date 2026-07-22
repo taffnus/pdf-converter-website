@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Anmelden — EasyConvert</title>
+<title>Log in — EasyConvert</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -74,7 +74,9 @@
     flex:1;
     display:flex; align-items:center; justify-content:center;
     padding:32px 24px 64px;
+    visibility:hidden;
   }
+  body.ready .center{ visibility:visible; }
 
   .auth-card{
     width:100%; max-width:400px;
@@ -149,26 +151,26 @@
 
 <div class="center">
   <div class="auth-card">
-    <h1 id="form-title">Willkommen zurück</h1>
-    <p class="sub" id="form-sub">Melde dich an, um dein Dashboard zu sehen.</p>
+    <h1 id="form-title">Welcome back</h1>
+    <p class="sub" id="form-sub">Log in to see your dashboard.</p>
 
     <div class="message" id="message"></div>
 
     <form id="auth-form">
       <div class="field">
-        <label for="email">E-Mail</label>
+        <label for="email">Email</label>
         <input type="email" id="email" required autocomplete="email">
       </div>
       <div class="field">
-        <label for="password">Passwort</label>
+        <label for="password">Password</label>
         <input type="password" id="password" required autocomplete="current-password" minlength="6">
       </div>
-      <button type="submit" class="btn-primary" id="submit-btn">Anmelden</button>
+      <button type="submit" class="btn-primary" id="submit-btn">Log in</button>
     </form>
 
     <div class="switch-mode">
-      <span id="switch-text">Noch kein Konto?</span>
-      <button type="button" id="switch-btn">Registrieren</button>
+      <span id="switch-text">Don't have an account?</span>
+      <button type="button" id="switch-btn">Sign up</button>
     </div>
   </div>
 </div>
@@ -203,17 +205,17 @@
     mode = mode === "login" ? "signup" : "login";
     clearMessage();
     if (mode === "signup") {
-      title.textContent = "Konto erstellen";
-      sub.textContent = "200 Credits gratis, keine Kreditkarte nötig.";
-      submitBtn.textContent = "Registrieren";
-      switchText.textContent = "Schon ein Konto?";
-      switchBtn.textContent = "Anmelden";
+      title.textContent = "Create your account";
+      sub.textContent = "200 free credits, no credit card required.";
+      submitBtn.textContent = "Sign up";
+      switchText.textContent = "Already have an account?";
+      switchBtn.textContent = "Log in";
     } else {
-      title.textContent = "Willkommen zurück";
-      sub.textContent = "Melde dich an, um dein Dashboard zu sehen.";
-      submitBtn.textContent = "Anmelden";
-      switchText.textContent = "Noch kein Konto?";
-      switchBtn.textContent = "Registrieren";
+      title.textContent = "Welcome back";
+      sub.textContent = "Log in to see your dashboard.";
+      submitBtn.textContent = "Log in";
+      switchText.textContent = "Don't have an account?";
+      switchBtn.textContent = "Sign up";
     }
   });
 
@@ -233,7 +235,7 @@
         if (data.session) {
           window.location.href = "dashboard.html";
         } else {
-          showMessage("Fast geschafft — bitte bestätige deine E-Mail-Adresse über den Link, den wir dir geschickt haben.", "success");
+          showMessage("Almost there — please confirm your email address using the link we just sent you.", "success");
         }
       } else {
         const { error } = await sb.auth.signInWithPassword({ email, password });
@@ -241,15 +243,19 @@
         window.location.href = "dashboard.html";
       }
     } catch (err) {
-      showMessage(err.message || "Etwas ist schiefgelaufen. Bitte versuch es erneut.", "error");
+      showMessage(err.message || "Something went wrong. Please try again.", "error");
     } finally {
       submitBtn.disabled = false;
     }
   });
 
-  // Bereits eingeloggt? Direkt zum Dashboard.
+  // Already logged in? Skip straight to the dashboard instead of flashing this form.
   sb.auth.getSession().then(({ data }) => {
-    if (data.session) window.location.href = "dashboard.html";
+    if (data.session) {
+      window.location.href = "dashboard.html";
+    } else {
+      document.body.classList.add("ready");
+    }
   });
 </script>
 </body>

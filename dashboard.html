@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -179,13 +179,13 @@
     <a href="index.html" class="logo"><span class="logo-mark"></span>EasyConvert</a>
     <div class="nav-right">
       <span class="user-email" id="user-email"></span>
-      <button class="btn-secondary" id="logout-btn">Abmelden</button>
+      <button class="btn-secondary" id="logout-btn">Log out</button>
     </div>
   </nav>
 </div>
 
 <main class="wrap" id="main-content">
-  <div class="loading" id="loading">Lade dein Dashboard …</div>
+  <div class="loading" id="loading">Loading your dashboard …</div>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -206,32 +206,32 @@
       const used = profile.monthly_usage || 0;
       const pct = Math.min(100, (used / FAIR_USE_LIMIT_PRO) * 100);
       usageCardHtml = `
-        <h3>Nutzung diesen Monat</h3>
+        <h3>Usage this month</h3>
         <div class="stat-value">${used} <span style="font-size:16px;color:var(--text-dim);font-weight:500;">/ ${FAIR_USE_LIMIT_PRO}</span></div>
-        <div class="stat-label">Konvertierungen (Fair-Use-Grenze)</div>
+        <div class="stat-label">conversions (fair-use limit)</div>
         <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
       `;
     } else {
       usageCardHtml = `
-        <h3>Verbleibende Credits</h3>
+        <h3>Credits remaining</h3>
         <div class="stat-value">${profile.credits_remaining}</div>
-        <div class="stat-label">Konvertierungen übrig</div>
+        <div class="stat-label">conversions left</div>
       `;
     }
 
     const upgradeHtml = isPro ? "" : `
       <div class="upgrade-card" style="margin-top:20px;">
         <div>
-          <h3>Auf Pro upgraden</h3>
-          <p>Unbegrenzte Konvertierungen (Fair-Use ${FAIR_USE_LIMIT_PRO}/Monat) für 5 €/Monat.</p>
+          <h3>Upgrade to Pro</h3>
+          <p>Unlimited conversions (fair-use ${FAIR_USE_LIMIT_PRO}/month) for $5/month.</p>
         </div>
-        <button class="btn-primary" id="upgrade-btn">Pro werden</button>
+        <button class="btn-primary" id="upgrade-btn">Go Pro</button>
       </div>
     `;
 
     mainContent.innerHTML = `
-      <h1>Dein Dashboard</h1>
-      <p class="page-sub">API-Key, Plan und Verbrauch auf einen Blick.</p>
+      <h1>Your dashboard</h1>
+      <p class="page-sub">Your API key, plan, and usage at a glance.</p>
 
       <div class="grid">
         <div class="card">
@@ -244,12 +244,12 @@
       </div>
 
       <div class="card">
-        <h3>API-Key</h3>
+        <h3>API key</h3>
         <div class="api-key-row">
           <code id="api-key-value">${profile.api_key}</code>
-          <button class="copy-btn" id="copy-key-btn">Kopieren</button>
+          <button class="copy-btn" id="copy-key-btn">Copy</button>
         </div>
-        <div class="key-hint">Im Make/Zapier HTTP-Modul als Header <code style="font-family:var(--mono)">X-API-Key</code> verwenden.</div>
+        <div class="key-hint">Use it as the <code style="font-family:var(--mono)">X-API-Key</code> header in your Make/Zapier HTTP module.</div>
       </div>
 
       ${upgradeHtml}
@@ -258,14 +258,14 @@
     document.getElementById("copy-key-btn").addEventListener("click", () => {
       navigator.clipboard.writeText(profile.api_key);
       const btn = document.getElementById("copy-key-btn");
-      btn.textContent = "Kopiert!";
-      setTimeout(() => { btn.textContent = "Kopieren"; }, 1500);
+      btn.textContent = "Copied!";
+      setTimeout(() => { btn.textContent = "Copy"; }, 1500);
     });
 
     const upgradeBtn = document.getElementById("upgrade-btn");
     if (upgradeBtn) {
       upgradeBtn.addEventListener("click", () => {
-        alert("Der Stripe-Checkout ist noch nicht angebunden — das kommt in einem späteren Schritt.");
+        alert("Stripe checkout isn't connected yet — that's coming in a later step.");
       });
     }
   }
@@ -284,7 +284,7 @@
       .single();
 
     if (error || !profile) {
-      mainContent.innerHTML = `<div class="error-state">Profil konnte nicht geladen werden: ${error ? error.message : "kein Profil gefunden"}</div>`;
+      mainContent.innerHTML = `<div class="error-state">Couldn't load your profile: ${error ? error.message : "no profile found"}</div>`;
       return;
     }
 
