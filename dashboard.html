@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — EasyConvert</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0f;
+    --bg-elevated:#111119;
+    --surface:#15151f;
+    --surface-hover:#1b1b28;
+    --border:rgba(139,92,246,0.18);
+    --border-strong:rgba(139,92,246,0.4);
+    --text:#f3f2f8;
+    --text-dim:#9997ab;
+    --text-dimmer:#67657a;
+    --purple:#8b5cf6;
+    --pink:#ec4899;
+    --red:#f87171;
+    --green:#4ade80;
+    --gradient: linear-gradient(135deg, var(--purple), var(--pink));
+    --mono: 'JetBrains Mono', monospace;
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  body{
+    background:
+      radial-gradient(ellipse 700px 500px at 20% -10%, rgba(139,92,246,0.16), transparent),
+      radial-gradient(ellipse 600px 500px at 90% 10%, rgba(236,72,153,0.10), transparent),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--body);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+
+  .bg-grid{
+    position:fixed; inset:0; z-index:-1;
+    background-image:
+      linear-gradient(rgba(139,92,246,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(139,92,246,0.05) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 900px 600px at 50% 0%, black 40%, transparent 75%);
+  }
+
+  a{ color:inherit; text-decoration:none; }
+
+  .wrap{ max-width:880px; margin:0 auto; padding:0 24px; }
+
+  nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:24px 0;
+  }
+  .logo{
+    font-family:var(--display); font-weight:600; font-size:19px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .logo-mark{
+    width:22px; height:22px; border-radius:6px;
+    background:var(--gradient);
+    display:inline-block;
+  }
+  .nav-right{ display:flex; align-items:center; gap:16px; }
+  .user-email{ font-size:13.5px; color:var(--text-dim); }
+  .btn-secondary{
+    background:transparent; border:1px solid var(--border); color:var(--text);
+    padding:9px 16px; border-radius:8px; font-size:13.5px; font-weight:500;
+    cursor:pointer; font-family:var(--body);
+    transition:border-color .15s, background .15s;
+  }
+  .btn-secondary:hover{ border-color:var(--border-strong); background:var(--surface-hover); }
+
+  main{ padding:32px 0 80px; }
+
+  h1{
+    font-family:var(--display); font-weight:700; font-size:clamp(26px, 3.4vw, 34px);
+    letter-spacing:-0.01em; margin-bottom:6px;
+  }
+  .page-sub{ color:var(--text-dim); font-size:15px; margin-bottom:36px; }
+
+  .grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:20px;
+  }
+
+  .card{
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:16px; padding:26px 26px;
+  }
+  .card h3{
+    font-family:var(--display); font-size:14px; font-weight:600;
+    color:var(--text-dim); text-transform:uppercase; letter-spacing:.04em;
+    margin-bottom:14px;
+  }
+
+  .plan-badge{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--mono); font-size:13px;
+    background:rgba(139,92,246,0.1); border:1px solid var(--border);
+    padding:6px 12px; border-radius:100px; color:var(--purple);
+  }
+  .plan-badge.pro{ color:var(--pink); border-color:rgba(236,72,153,0.3); background:rgba(236,72,153,0.1); }
+
+  .stat-value{
+    font-family:var(--display); font-size:38px; font-weight:700; margin:10px 0 4px;
+  }
+  .stat-label{ color:var(--text-dim); font-size:13.5px; }
+
+  .progress-track{
+    background:var(--bg-elevated); border:1px solid var(--border);
+    border-radius:100px; height:8px; overflow:hidden; margin-top:12px;
+  }
+  .progress-fill{
+    height:100%; background:var(--gradient); border-radius:100px;
+    transition:width .3s;
+  }
+
+  .api-key-row{
+    display:flex; align-items:center; gap:10px;
+    background:var(--bg-elevated); border:1px solid var(--border);
+    border-radius:9px; padding:12px 14px; margin-top:4px;
+  }
+  .api-key-row code{
+    font-family:var(--mono); font-size:13.5px; color:var(--text);
+    flex:1; overflow-x:auto; white-space:nowrap;
+  }
+  .copy-btn{
+    background:var(--surface); border:1px solid var(--border); color:var(--text-dim);
+    padding:7px 12px; border-radius:7px; font-size:12.5px; font-weight:500;
+    cursor:pointer; font-family:var(--body); flex-shrink:0;
+    transition:border-color .15s, color .15s;
+  }
+  .copy-btn:hover{ border-color:var(--border-strong); color:var(--text); }
+  .key-hint{ font-size:12.5px; color:var(--text-dimmer); margin-top:10px; }
+
+  .upgrade-card{
+    background:var(--surface); border:1px solid var(--border-strong);
+    border-radius:16px; padding:28px 26px;
+    display:flex; align-items:center; justify-content:space-between; gap:20px;
+    flex-wrap:wrap;
+  }
+  .upgrade-card div h3{
+    font-family:var(--display); font-size:17px; font-weight:600; margin-bottom:6px;
+    text-transform:none; letter-spacing:normal; color:var(--text);
+  }
+  .upgrade-card p{ color:var(--text-dim); font-size:14px; max-width:420px; }
+  .btn-primary{
+    padding:12px 22px; border-radius:9px; font-size:14.5px; font-weight:600;
+    background:var(--gradient); color:#fff; border:none; cursor:pointer;
+    box-shadow:0 0 0 1px rgba(255,255,255,0.06) inset, 0 8px 24px -8px rgba(139,92,246,0.55);
+    transition:transform .15s;
+    flex-shrink:0;
+    font-family:var(--body);
+  }
+  .btn-primary:hover{ transform:translateY(-1px); }
+
+  .loading, .error-state{
+    text-align:center; padding:80px 24px; color:var(--text-dim);
+  }
+  .error-state{ color:var(--red); }
+
+  @media (max-width:640px){
+    .grid{ grid-template-columns:1fr; }
+    .nav-right .user-email{ display:none; }
+  }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+
+<div class="wrap">
+  <nav>
+    <a href="index.html" class="logo"><span class="logo-mark"></span>EasyConvert</a>
+    <div class="nav-right">
+      <span class="user-email" id="user-email"></span>
+      <button class="btn-secondary" id="logout-btn">Abmelden</button>
+    </div>
+  </nav>
+</div>
+
+<main class="wrap" id="main-content">
+  <div class="loading" id="loading">Lade dein Dashboard …</div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="supabase-client.js"></script>
+<script>
+  const FAIR_USE_LIMIT_PRO = 2000;
+  const mainContent = document.getElementById("main-content");
+  const userEmailEl = document.getElementById("user-email");
+
+  function renderDashboard(profile, email){
+    userEmailEl.textContent = email;
+
+    const isPro = profile.plan === "pro";
+    const planLabel = isPro ? "Pro" : "Free";
+
+    let usageCardHtml;
+    if (isPro) {
+      const used = profile.monthly_usage || 0;
+      const pct = Math.min(100, (used / FAIR_USE_LIMIT_PRO) * 100);
+      usageCardHtml = `
+        <h3>Nutzung diesen Monat</h3>
+        <div class="stat-value">${used} <span style="font-size:16px;color:var(--text-dim);font-weight:500;">/ ${FAIR_USE_LIMIT_PRO}</span></div>
+        <div class="stat-label">Konvertierungen (Fair-Use-Grenze)</div>
+        <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+      `;
+    } else {
+      usageCardHtml = `
+        <h3>Verbleibende Credits</h3>
+        <div class="stat-value">${profile.credits_remaining}</div>
+        <div class="stat-label">Konvertierungen übrig</div>
+      `;
+    }
+
+    const upgradeHtml = isPro ? "" : `
+      <div class="upgrade-card" style="margin-top:20px;">
+        <div>
+          <h3>Auf Pro upgraden</h3>
+          <p>Unbegrenzte Konvertierungen (Fair-Use ${FAIR_USE_LIMIT_PRO}/Monat) für 5 €/Monat.</p>
+        </div>
+        <button class="btn-primary" id="upgrade-btn">Pro werden</button>
+      </div>
+    `;
+
+    mainContent.innerHTML = `
+      <h1>Dein Dashboard</h1>
+      <p class="page-sub">API-Key, Plan und Verbrauch auf einen Blick.</p>
+
+      <div class="grid">
+        <div class="card">
+          <h3>Plan</h3>
+          <span class="plan-badge ${isPro ? "pro" : ""}">${planLabel}</span>
+        </div>
+        <div class="card">
+          ${usageCardHtml}
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>API-Key</h3>
+        <div class="api-key-row">
+          <code id="api-key-value">${profile.api_key}</code>
+          <button class="copy-btn" id="copy-key-btn">Kopieren</button>
+        </div>
+        <div class="key-hint">Im Make/Zapier HTTP-Modul als Header <code style="font-family:var(--mono)">X-API-Key</code> verwenden.</div>
+      </div>
+
+      ${upgradeHtml}
+    `;
+
+    document.getElementById("copy-key-btn").addEventListener("click", () => {
+      navigator.clipboard.writeText(profile.api_key);
+      const btn = document.getElementById("copy-key-btn");
+      btn.textContent = "Kopiert!";
+      setTimeout(() => { btn.textContent = "Kopieren"; }, 1500);
+    });
+
+    const upgradeBtn = document.getElementById("upgrade-btn");
+    if (upgradeBtn) {
+      upgradeBtn.addEventListener("click", () => {
+        alert("Der Stripe-Checkout ist noch nicht angebunden — das kommt in einem späteren Schritt.");
+      });
+    }
+  }
+
+  async function init(){
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    const { data: profile, error } = await sb
+      .from("profiles")
+      .select("api_key, plan, credits_remaining, monthly_usage")
+      .eq("id", session.user.id)
+      .single();
+
+    if (error || !profile) {
+      mainContent.innerHTML = `<div class="error-state">Profil konnte nicht geladen werden: ${error ? error.message : "kein Profil gefunden"}</div>`;
+      return;
+    }
+
+    renderDashboard(profile, session.user.email);
+  }
+
+  document.getElementById("logout-btn").addEventListener("click", async () => {
+    await sb.auth.signOut();
+    window.location.href = "login.html";
+  });
+
+  init();
+</script>
+</body>
+</html>

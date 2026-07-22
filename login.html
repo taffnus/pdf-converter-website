@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anmelden — EasyConvert</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0f;
+    --bg-elevated:#111119;
+    --surface:#15151f;
+    --surface-hover:#1b1b28;
+    --border:rgba(139,92,246,0.18);
+    --border-strong:rgba(139,92,246,0.4);
+    --text:#f3f2f8;
+    --text-dim:#9997ab;
+    --text-dimmer:#67657a;
+    --purple:#8b5cf6;
+    --pink:#ec4899;
+    --red:#f87171;
+    --green:#4ade80;
+    --gradient: linear-gradient(135deg, var(--purple), var(--pink));
+    --mono: 'JetBrains Mono', monospace;
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  body{
+    background:
+      radial-gradient(ellipse 700px 500px at 20% -10%, rgba(139,92,246,0.16), transparent),
+      radial-gradient(ellipse 600px 500px at 90% 10%, rgba(236,72,153,0.10), transparent),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--body);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+
+  .bg-grid{
+    position:fixed; inset:0; z-index:-1;
+    background-image:
+      linear-gradient(rgba(139,92,246,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(139,92,246,0.05) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 900px 600px at 50% 0%, black 40%, transparent 75%);
+  }
+
+  a{ color:inherit; text-decoration:none; }
+
+  .wrap{ max-width:1080px; margin:0 auto; padding:0 24px; width:100%; }
+
+  nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:24px 0;
+  }
+  .logo{
+    font-family:var(--display); font-weight:600; font-size:19px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .logo-mark{
+    width:22px; height:22px; border-radius:6px;
+    background:var(--gradient);
+    display:inline-block;
+  }
+
+  .center{
+    flex:1;
+    display:flex; align-items:center; justify-content:center;
+    padding:32px 24px 64px;
+  }
+
+  .auth-card{
+    width:100%; max-width:400px;
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:16px; padding:36px 32px;
+  }
+  .auth-card h1{
+    font-family:var(--display); font-weight:600; font-size:22px;
+    margin-bottom:6px;
+  }
+  .auth-card .sub{
+    color:var(--text-dim); font-size:14px; margin-bottom:26px;
+  }
+
+  label{
+    display:block; font-size:13px; color:var(--text-dim); margin-bottom:6px;
+  }
+  .field{ margin-bottom:16px; }
+  input[type="email"], input[type="password"]{
+    width:100%; background:var(--bg-elevated); border:1px solid var(--border);
+    border-radius:9px; padding:11px 13px; color:var(--text); font-size:14.5px;
+    font-family:var(--body);
+    transition:border-color .15s;
+  }
+  input[type="email"]:focus, input[type="password"]:focus{
+    outline:none; border-color:var(--border-strong);
+  }
+
+  .btn-primary{
+    width:100%; padding:12px 22px; border-radius:9px; font-size:14.5px; font-weight:600;
+    background:var(--gradient); color:#fff; border:none; cursor:pointer;
+    box-shadow:0 0 0 1px rgba(255,255,255,0.06) inset, 0 8px 24px -8px rgba(139,92,246,0.55);
+    transition:transform .15s, opacity .15s;
+    margin-top:6px;
+  }
+  .btn-primary:hover{ transform:translateY(-1px); }
+  .btn-primary:disabled{ opacity:.6; cursor:default; transform:none; }
+
+  .switch-mode{
+    text-align:center; margin-top:20px; font-size:13.5px; color:var(--text-dim);
+  }
+  .switch-mode button{
+    background:none; border:none; color:var(--purple); font-size:13.5px;
+    font-family:var(--body); font-weight:600; cursor:pointer; padding:0;
+  }
+  .switch-mode button:hover{ color:var(--pink); }
+
+  .message{
+    font-size:13.5px; border-radius:9px; padding:10px 13px; margin-bottom:16px;
+    display:none;
+  }
+  .message.error{
+    display:block; background:rgba(248,113,113,0.1); border:1px solid rgba(248,113,113,0.3); color:var(--red);
+  }
+  .message.success{
+    display:block; background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.3); color:var(--green);
+  }
+
+  footer{
+    text-align:center; padding:24px; color:var(--text-dimmer); font-size:13px;
+  }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+
+<div class="wrap">
+  <nav>
+    <a href="index.html" class="logo"><span class="logo-mark"></span>EasyConvert</a>
+  </nav>
+</div>
+
+<div class="center">
+  <div class="auth-card">
+    <h1 id="form-title">Willkommen zurück</h1>
+    <p class="sub" id="form-sub">Melde dich an, um dein Dashboard zu sehen.</p>
+
+    <div class="message" id="message"></div>
+
+    <form id="auth-form">
+      <div class="field">
+        <label for="email">E-Mail</label>
+        <input type="email" id="email" required autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="password">Passwort</label>
+        <input type="password" id="password" required autocomplete="current-password" minlength="6">
+      </div>
+      <button type="submit" class="btn-primary" id="submit-btn">Anmelden</button>
+    </form>
+
+    <div class="switch-mode">
+      <span id="switch-text">Noch kein Konto?</span>
+      <button type="button" id="switch-btn">Registrieren</button>
+    </div>
+  </div>
+</div>
+
+<footer>© 2026 EasyConvert</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="supabase-client.js"></script>
+<script>
+  let mode = "login"; // "login" | "signup"
+
+  const form = document.getElementById("auth-form");
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const submitBtn = document.getElementById("submit-btn");
+  const messageBox = document.getElementById("message");
+  const title = document.getElementById("form-title");
+  const sub = document.getElementById("form-sub");
+  const switchText = document.getElementById("switch-text");
+  const switchBtn = document.getElementById("switch-btn");
+
+  function showMessage(text, type){
+    messageBox.textContent = text;
+    messageBox.className = "message " + type;
+  }
+  function clearMessage(){
+    messageBox.className = "message";
+    messageBox.textContent = "";
+  }
+
+  switchBtn.addEventListener("click", () => {
+    mode = mode === "login" ? "signup" : "login";
+    clearMessage();
+    if (mode === "signup") {
+      title.textContent = "Konto erstellen";
+      sub.textContent = "200 Credits gratis, keine Kreditkarte nötig.";
+      submitBtn.textContent = "Registrieren";
+      switchText.textContent = "Schon ein Konto?";
+      switchBtn.textContent = "Anmelden";
+    } else {
+      title.textContent = "Willkommen zurück";
+      sub.textContent = "Melde dich an, um dein Dashboard zu sehen.";
+      submitBtn.textContent = "Anmelden";
+      switchText.textContent = "Noch kein Konto?";
+      switchBtn.textContent = "Registrieren";
+    }
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    clearMessage();
+    submitBtn.disabled = true;
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    try {
+      if (mode === "signup") {
+        const { data, error } = await sb.auth.signUp({ email, password });
+        if (error) throw error;
+
+        if (data.session) {
+          window.location.href = "dashboard.html";
+        } else {
+          showMessage("Fast geschafft — bitte bestätige deine E-Mail-Adresse über den Link, den wir dir geschickt haben.", "success");
+        }
+      } else {
+        const { error } = await sb.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        window.location.href = "dashboard.html";
+      }
+    } catch (err) {
+      showMessage(err.message || "Etwas ist schiefgelaufen. Bitte versuch es erneut.", "error");
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+
+  // Bereits eingeloggt? Direkt zum Dashboard.
+  sb.auth.getSession().then(({ data }) => {
+    if (data.session) window.location.href = "dashboard.html";
+  });
+</script>
+</body>
+</html>
