@@ -165,6 +165,11 @@
   }
   .error-state{ color:var(--red); }
 
+  .info-banner{
+    font-size:13.5px; border-radius:9px; padding:12px 16px; margin-bottom:24px;
+    background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.3); color:var(--green);
+  }
+
   @media (max-width:640px){
     .grid{ grid-template-columns:1fr; }
     .nav-right .user-email{ display:none; }
@@ -219,6 +224,11 @@
       `;
     }
 
+    const justUpgraded = new URLSearchParams(window.location.search).get("upgraded") === "1";
+    const bannerHtml = !justUpgraded ? "" : isPro
+      ? `<div class="info-banner">You're on Pro now — thanks!</div>`
+      : `<div class="info-banner">Payment received — syncing with Stripe. If this still shows Free, refresh in a few seconds.</div>`;
+
     const upgradeHtml = isPro ? "" : `
       <div class="upgrade-card" style="margin-top:20px;">
         <div>
@@ -232,6 +242,8 @@
     mainContent.innerHTML = `
       <h1>Your dashboard</h1>
       <p class="page-sub">Your API key, plan, and usage at a glance.</p>
+
+      ${bannerHtml}
 
       <div class="grid">
         <div class="card">
@@ -264,8 +276,23 @@
 
     const upgradeBtn = document.getElementById("upgrade-btn");
     if (upgradeBtn) {
-      upgradeBtn.addEventListener("click", () => {
-        alert("Stripe checkout isn't connected yet — that's coming in a later step.");
+      upgradeBtn.addEventListener("click", async () => {
+        upgradeBtn.disabled = true;
+        upgradeBtn.textContent = "Redirecting…";
+        try {
+          const { data: { session } } = await sb.auth.getSession();
+          const res = await fetch(`${API_BASE_URL}/billing/create-checkout-session`, {
+            method: "POST",
+            headers: { Authorization: `Bearer ${session.access_token}` },
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.detail || "Could not start checkout.");
+          window.location.href = data.url;
+        } catch (err) {
+          alert(err.message || "Something went wrong starting checkout. Please try again.");
+          upgradeBtn.disabled = false;
+          upgradeBtn.textContent = "Go Pro";
+        }
       });
     }
   }
