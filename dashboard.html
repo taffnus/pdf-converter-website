@@ -175,6 +175,33 @@
   }
   .manage-link:hover{ color:var(--text-dim); text-decoration:underline; }
 
+  .help-steps{
+    list-style:none; counter-reset:step; margin:4px 0 18px;
+  }
+  .help-steps li{
+    counter-increment:step; display:flex; gap:12px; align-items:flex-start;
+    font-size:14px; color:var(--text-dim); padding:6px 0;
+  }
+  .help-steps li::before{
+    content:counter(step); flex-shrink:0;
+    width:20px; height:20px; border-radius:50%;
+    background:rgba(139,92,246,0.12); border:1px solid var(--border);
+    color:var(--purple); font-family:var(--mono); font-size:11px; font-weight:500;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .help-steps code{
+    font-family:var(--mono); font-size:12px; color:var(--text);
+    background:var(--bg-elevated); padding:2px 6px; border-radius:4px;
+  }
+  .mini-code{
+    font-family:var(--mono); font-size:12.5px; line-height:1.7; color:var(--text-dim);
+    background:var(--bg-elevated); border:1px solid var(--border); border-radius:9px;
+    padding:16px 18px; overflow-x:auto;
+  }
+  .mini-code .k{ color:var(--purple); }
+  .mini-code .s{ color:var(--pink); }
+  .mini-code .c{ color:var(--text-dimmer); }
+
   footer{
     text-align:center; padding:24px; color:var(--text-dimmer); font-size:13px;
   }
@@ -245,7 +272,7 @@
       <div class="upgrade-card" style="margin-top:20px;">
         <div>
           <h3>Upgrade to Pro</h3>
-          <p>Unlimited conversions (fair-use ${FAIR_USE_LIMIT_PRO}/month) for $5/month.</p>
+          <p>Unlimited conversions (fair-use ${FAIR_USE_LIMIT_PRO}/month) for €5/month.</p>
         </div>
         <button class="btn-primary" id="upgrade-btn">Go Pro</button>
       </div>
@@ -271,14 +298,40 @@
       <div class="card">
         <h3>API key</h3>
         <div class="api-key-row">
-          <code id="api-key-value">${profile.api_key}</code>
-          <button class="copy-btn" id="copy-key-btn">Copy</button>
+          <code id="api-key-value">${"•".repeat(28)}</code>
+          <button class="copy-btn" id="toggle-key-btn" type="button">Show</button>
+          <button class="copy-btn" id="copy-key-btn" type="button">Copy</button>
         </div>
         <div class="key-hint">Use it as the <code style="font-family:var(--mono)">X-API-Key</code> header in your Make/Zapier HTTP module.</div>
       </div>
 
+      <div class="card" style="margin-top:20px;">
+        <h3>Using your API key</h3>
+        <ol class="help-steps">
+          <li><span>Add an HTTP module (POST request) to your Make or Zapier scenario.</span></li>
+          <li><span>Set the <code>X-API-Key</code> header to your API key above.</span></li>
+          <li><span>Attach your PDF as the <code>file</code> field (multipart/form-data) and send — you'll get a PNG straight back.</span></li>
+        </ol>
+        <div class="mini-code"><span class="k">POST</span> ${API_BASE_URL}/convert
+
+<span class="c"># Header</span>
+X-API-Key: <span class="s">your_api_key</span>
+
+<span class="c"># Body (multipart/form-data)</span>
+file: <span class="s">your_file.pdf</span></div>
+      </div>
+
       ${upgradeHtml}
     `;
+
+    let keyVisible = false;
+    const keyValueEl = document.getElementById("api-key-value");
+    const toggleKeyBtn = document.getElementById("toggle-key-btn");
+    toggleKeyBtn.addEventListener("click", () => {
+      keyVisible = !keyVisible;
+      keyValueEl.textContent = keyVisible ? profile.api_key : "•".repeat(28);
+      toggleKeyBtn.textContent = keyVisible ? "Hide" : "Show";
+    });
 
     document.getElementById("copy-key-btn").addEventListener("click", () => {
       navigator.clipboard.writeText(profile.api_key);

@@ -38,7 +38,9 @@
     font-family:var(--body);
     line-height:1.5;
     -webkit-font-smoothing:antialiased;
+    visibility:hidden;
   }
+  body.ready{ visibility:visible; }
 
   .bg-grid{
     position:fixed; inset:0; z-index:-1;
@@ -70,12 +72,20 @@
   .nav-links{ display:flex; gap:32px; align-items:center; }
   .nav-links a{ color:var(--text-dim); font-size:14px; transition:color .15s; }
   .nav-links a:hover{ color:var(--text); }
-  .nav-cta{
-    background:var(--surface); border:1px solid var(--border);
-    padding:9px 18px; border-radius:8px; font-size:14px; font-weight:500;
-    transition:border-color .15s, background .15s;
+  .nav-actions{ display:flex; align-items:center; gap:10px; }
+  .nav-login{
+    padding:9px 16px; border-radius:8px; font-size:14px; font-weight:500;
+    border:1px solid var(--border); color:var(--text-dim);
+    transition:border-color .15s, color .15s;
   }
-  .nav-cta:hover{ border-color:var(--border-strong); background:var(--surface-hover); }
+  .nav-login:hover{ border-color:var(--border-strong); color:var(--text); }
+  .nav-cta-primary{
+    padding:9px 18px; border-radius:8px; font-size:14px; font-weight:600;
+    background:var(--gradient); color:#fff;
+    box-shadow:0 0 0 1px rgba(255,255,255,0.06) inset, 0 6px 18px -8px rgba(139,92,246,0.55);
+    transition:transform .15s;
+  }
+  .nav-cta-primary:hover{ transform:translateY(-1px); }
 
   /* ---- Hero ---- */
   .hero{
@@ -209,6 +219,15 @@
   .price-card .btn-primary, .price-card .btn-secondary{ width:100%; margin-top:auto; }
   .price-footnote{ font-size:12px; color:var(--text-dimmer); margin-top:12px; text-align:center; }
 
+  .enterprise-card{
+    max-width:760px; margin:20px auto 0;
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:16px; padding:26px 28px;
+    display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;
+  }
+  .enterprise-card h3{ font-family:var(--display); font-size:17px; font-weight:600; margin-bottom:6px; }
+  .enterprise-card p{ color:var(--text-dim); font-size:14px; max-width:440px; }
+
   /* ---- Code example ---- */
   .code-section{ padding:20px 0 96px; }
   .code-card{
@@ -228,6 +247,25 @@
   pre .k{ color:var(--purple); }
   pre .s{ color:var(--pink); }
   pre .c{ color:var(--text-dimmer); }
+
+  .steps-list{
+    list-style:none; counter-reset:step; max-width:640px; margin:0 auto 28px;
+  }
+  .steps-list li{
+    counter-increment:step; display:flex; gap:14px; align-items:flex-start;
+    font-size:14.5px; color:var(--text-dim); padding:8px 0;
+  }
+  .steps-list li::before{
+    content:counter(step); flex-shrink:0;
+    width:22px; height:22px; border-radius:50%;
+    background:rgba(139,92,246,0.12); border:1px solid var(--border);
+    color:var(--purple); font-family:var(--mono); font-size:12px; font-weight:500;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .steps-list code{
+    font-family:var(--mono); font-size:12.5px; color:var(--text);
+    background:var(--bg-elevated); padding:2px 6px; border-radius:4px;
+  }
 
   /* ---- Footer ---- */
   footer{
@@ -250,21 +288,23 @@
 
 <div class="wrap">
   <nav>
-    <div class="logo"><span class="logo-mark"></span>EasyConvert</div>
+    <a href="index.html" class="logo"><span class="logo-mark"></span>EasyConvert</a>
     <div class="nav-links">
       <a href="#features">Features</a>
       <a href="#pricing">Pricing</a>
       <a href="#docs">API</a>
-      <a href="login.html">Login</a>
     </div>
-    <a href="login.html" class="nav-cta">Get API key</a>
+    <div class="nav-actions">
+      <a href="login.html" class="nav-login">Log in</a>
+      <a href="login.html" class="nav-cta-primary">Get API key</a>
+    </div>
   </nav>
 
   <section class="hero">
     <div>
       <div class="eyebrow">For Make &amp; Zapier</div>
       <h1>PDF to PNG.<br>In <span class="accent">one request.</span></h1>
-      <p>A small, dependable conversion API built for no-code workflows. File in, image back — no queues, no timeouts, no surprises.</p>
+      <p>A small, trustworthy conversion API built for no-code workflows. File in, image back — no queues, no timeouts, no surprises.</p>
       <div class="cta-row">
         <a href="login.html" class="btn-primary">Get 200 free credits</a>
         <a href="#docs" class="btn-secondary">View the API</a>
@@ -325,7 +365,7 @@
     <div class="price-grid">
       <div class="price-card">
         <h3>Free</h3>
-        <div class="price-amount">$0</div>
+        <div class="price-amount">€0</div>
         <div class="price-sub">200 credits, one-time</div>
         <ul class="price-list">
           <li>200 PDF-to-PNG conversions</li>
@@ -338,7 +378,7 @@
 
       <div class="price-card pro">
         <h3>Pro</h3>
-        <div class="price-amount">$5 <span>/ month</span></div>
+        <div class="price-amount">€5 <span>/ month</span></div>
         <div class="price-sub">Unlimited conversions*</div>
         <ul class="price-list">
           <li>Unlimited PDF-to-PNG conversions*</li>
@@ -350,6 +390,14 @@
       </div>
     </div>
     <div class="price-footnote">*A fair-use limit of 2,000 conversions/month keeps the service stable for everyone. Need more? Just reach out.</div>
+
+    <div class="enterprise-card">
+      <div>
+        <h3>Enterprise</h3>
+        <p>Higher limits, custom support, and a setup tailored to your workflow.</p>
+      </div>
+      <a href="mailto:edeka130208@gmail.com?subject=EasyConvert%20Enterprise" class="btn-secondary">Contact us</a>
+    </div>
   </section>
 
   <section class="code-section" id="docs">
@@ -358,12 +406,17 @@
       <h2>Wired up in two minutes</h2>
       <p>One HTTP module in Make or Zapier is all it takes.</p>
     </div>
+    <ol class="steps-list">
+      <li><span>Add an HTTP module (POST request) to your Make or Zapier scenario.</span></li>
+      <li><span>Set the <code>X-API-Key</code> header to the API key from your dashboard.</span></li>
+      <li><span>Attach your PDF as the <code>file</code> field (multipart/form-data) and run it — you'll get a PNG straight back.</span></li>
+    </ol>
     <div class="code-card">
       <div class="code-head">
         <span class="dot"></span><span class="dot"></span><span class="dot"></span>
         <span>HTTP module configuration</span>
       </div>
-      <pre><span class="k">POST</span> https://api.easyconvert.dev/convert
+      <pre><span class="k">POST</span> https://pdf-converter-api-0g8x.onrender.com/convert
 
 <span class="c"># Header</span>
 X-API-Key: <span class="s">your_api_key</span>
@@ -386,5 +439,17 @@ file: <span class="s">your_file.pdf</span>
   </footer>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="supabase-client.js"></script>
+<script>
+  // Already logged in? Skip the marketing page and go straight to the dashboard.
+  sb.auth.getSession().then(({ data }) => {
+    if (data.session) {
+      window.location.href = "dashboard.html";
+    } else {
+      document.body.classList.add("ready");
+    }
+  });
+</script>
 </body>
 </html>
