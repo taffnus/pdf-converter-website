@@ -399,7 +399,7 @@
           <li>Dedicated support</li>
           <li>Tailored onboarding</li>
         </ul>
-        <a href="mailto:easyconvertsupport@gmail.com?subject=PixelPDF%20Enterprise" class="btn-secondary">Contact us</a>
+        <a href="mailto:easyconvertsupport@gmail.com?subject=PixelPDF%20Enterprise" class="btn-secondary" id="enterprise-contact-btn">Contact us</a>
       </div>
     </div>
     <div class="price-footnote">*A fair-use limit of 2,000 conversions/month keeps the service stable for everyone. Need more? Just reach out.</div>
@@ -455,6 +455,18 @@ file: <span class="s">your_file.pdf</span>
       document.body.classList.add("ready");
     }
   });
+
+  // mailto: links don't always trigger a mail app (depends on the visitor's OS/browser
+  // setup), so also copy the address as a reliable fallback.
+  const enterpriseBtn = document.getElementById("enterprise-contact-btn");
+  if (enterpriseBtn) {
+    enterpriseBtn.addEventListener("click", () => {
+      navigator.clipboard.writeText("easyconvertsupport@gmail.com").catch(() => {});
+      const original = enterpriseBtn.textContent;
+      enterpriseBtn.textContent = "Email copied!";
+      setTimeout(() => { enterpriseBtn.textContent = original; }, 2000);
+    });
+  }
 </script>
 </body>
 </html>
