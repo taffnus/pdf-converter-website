@@ -8,134 +8,188 @@
 <link rel="icon" type="image/png" href="logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg:#0a0a0f;
-    --bg-elevated:#111119;
-    --surface:#15151f;
-    --border:rgba(139,92,246,0.18);
-    --border-strong:rgba(139,92,246,0.4);
-    --text:#f3f2f8;
-    --text-dim:#9997ab;
-    --text-dimmer:#67657a;
-    --purple:#8b5cf6;
-    --pink:#ec4899;
-    --gradient: linear-gradient(135deg, var(--purple), var(--pink));
-    --display: 'Space Grotesk', sans-serif;
-    --body: 'Inter', sans-serif;
-  }
-
-  *{ box-sizing:border-box; margin:0; padding:0; }
-
-  body{
-    background:
-      radial-gradient(ellipse 700px 500px at 20% -10%, rgba(139,92,246,0.16), transparent),
-      var(--bg);
-    color:var(--text);
-    font-family:var(--body);
-    line-height:1.6;
-    -webkit-font-smoothing:antialiased;
-  }
-
-  a{ color:var(--purple); text-decoration:none; }
-  a:hover{ text-decoration:underline; }
-
-  .wrap{ max-width:1080px; margin:0 auto; padding:0 24px; }
-
-  nav{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:24px 0;
-  }
-  .logo{
-    font-family:var(--display); font-weight:600; font-size:19px;
-    display:flex; align-items:center; gap:8px; color:var(--text);
-  }
-  .logo-mark{
-    width:22px; height:22px;
-    display:inline-block;
-    object-fit:contain;
-  }
-
-  main{ max-width:640px; margin:0 auto; padding:32px 24px 96px; }
-
-  h1{
-    font-family:var(--display); font-weight:700; font-size:clamp(28px, 4vw, 36px);
-    letter-spacing:-0.01em; margin-bottom:12px;
-  }
-  .updated{ color:var(--text-dimmer); font-size:13px; margin-bottom:32px; }
-  h2{
-    font-family:var(--display); font-weight:600; font-size:19px;
-    margin:40px 0 12px;
-  }
-  p{ color:var(--text-dim); font-size:15px; margin-bottom:12px; }
-  ul{ color:var(--text-dim); font-size:15px; margin:0 0 12px 20px; }
-  li{ margin-bottom:6px; }
-
-  section{
-    background:var(--surface); border:1px solid var(--border);
-    border-radius:14px; padding:8px 28px 28px;
-  }
-
-  footer{
-    text-align:center; padding:24px; color:var(--text-dimmer); font-size:13px;
-  }
-</style>
+<link rel="stylesheet" href="legal.css">
 </head>
 <body>
 <div class="wrap">
-  <nav>
+  <nav class="site-nav">
     <a href="index.html" class="logo"><img src="logo.png" alt="" class="logo-mark">PixelPDF</a>
+    <a href="index.html" class="back-link">← Back to site</a>
   </nav>
 </div>
 
-<main>
-  <h1>Privacy Policy</h1>
-  <p class="updated">Last updated: July 2026</p>
+<header class="doc-header">
+  <div class="wrap">
+    <div class="doc-eyebrow">Legal</div>
+    <h1>Privacy Policy</h1>
+    <div class="doc-meta">
+      <span>Effective 23 July 2026</span>
+      <span class="sep">·</span>
+      <span>GDPR compliant</span>
+      <span class="sep">·</span>
+      <span>pixelpdf.dev</span>
+    </div>
+  </div>
+</header>
 
-  <section>
-    <h2>1. Controller</h2>
-    <p>Yunus Ak, Kreuzfeldstraße 34, 45473 Mülheim an der Ruhr, Germany<br>Email: support@pixelpdf.dev</p>
+<div class="wrap doc-layout">
+  <aside class="toc">
+    <div class="toc-title">Contents</div>
+    <nav>
+      <a href="#controller">1. Controller</a>
+      <a href="#overview">2. Overview</a>
+      <a href="#account">3. Account &amp; registration</a>
+      <a href="#api">4. Use of the API</a>
+      <a href="#payments">5. Payments</a>
+      <a href="#providers">6. Service providers</a>
+      <a href="#cookies">7. Cookies &amp; storage</a>
+      <a href="#retention">8. Retention</a>
+      <a href="#rights">9. Your rights</a>
+      <a href="#automated">10. Automated decisions</a>
+    </nav>
+  </aside>
 
-    <h2>2. Overview of processing</h2>
-    <p>PixelPDF is a PDF-to-PNG conversion API with a user account. To operate it, I process personal data during registration, when the API is used, and when payments are made for the Pro plan. External service providers are involved as processors or as independent controllers (see section 6).</p>
+  <article class="doc">
+    <p class="doc-intro">
+      This policy explains what personal data PixelPDF collects, why, on what legal basis, and which
+      third-party processors are involved. We collect only what is needed to operate the service and never
+      sell your data. Uploaded PDF files are processed transiently and are not stored.
+    </p>
 
-    <h2>3. Registration and user account</h2>
-    <p>During registration I collect your email address and password (passwords are stored encrypted). In addition, an automatically generated API key, your plan (Free/Pro), remaining credits, and your monthly usage are stored. Authentication is handled by Supabase (Supabase, Inc.).</p>
-    <p><strong>Legal basis:</strong> Art. 6(1)(b) GDPR (performance of the usage contract).</p>
+    <section id="controller">
+      <h2><span class="sec-num">1</span> Controller</h2>
+      <div class="info-card">
+        <div class="row"><div class="k">Controller</div><div class="v">Yunus Ak</div></div>
+        <div class="row"><div class="k">Address</div><div class="v">Kreuzfeldstraße 34, 45473 Mülheim an der Ruhr, Germany</div></div>
+        <div class="row"><div class="k">Email</div><div class="v"><a href="mailto:support@pixelpdf.dev">support@pixelpdf.dev</a></div></div>
+      </div>
+    </section>
 
-    <h2>4. Use of the conversion API</h2>
-    <p>Each API call checks the submitted API key against the database and updates your remaining credits or monthly usage. Uploaded PDF files are processed only temporarily for the conversion and are deleted immediately afterwards — they are not stored permanently.</p>
-    <p><strong>Legal basis:</strong> Art. 6(1)(b) GDPR.</p>
+    <section id="overview">
+      <h2><span class="sec-num">2</span> Overview of processing</h2>
+      <p>
+        PixelPDF is a PDF-to-PNG conversion API with a user account. We process personal data in three main
+        contexts: when you register an account, when you make calls to the API, and when you pay for the Pro plan.
+        External service providers are involved as processors or as independent controllers, as set out in section 6.
+      </p>
+    </section>
 
-    <h2>5. Payment processing (Pro plan)</h2>
-    <p>Payments for the Pro plan are handled through the payment provider Stripe. Payment data (e.g. card details) is collected and processed exclusively by Stripe — I never receive or store full payment details myself. I only receive a customer and subscription identifier from Stripe in order to update your account status (Free/Pro).</p>
-    <p><strong>Legal basis:</strong> Art. 6(1)(b) GDPR.</p>
+    <section id="account">
+      <h2><span class="sec-num">3</span> Account and registration</h2>
+      <p>
+        When you register, we collect your email address and password (passwords are stored in hashed form and are
+        never visible to us). We also store an automatically generated API key, your plan (Free or Pro), your
+        remaining credits, and your monthly usage counter. Authentication and account storage are handled by
+        Supabase.
+      </p>
+      <p>You may also sign in with Google. In that case, Google confirms your identity to us and we receive your email address; we do not receive your Google password.</p>
+      <div class="legal-basis"><strong>Legal basis:</strong> Art. 6(1)(b) GDPR — performance of the usage contract.</div>
+    </section>
 
-    <h2>6. Service providers used</h2>
-    <ul>
-      <li><strong>Supabase, Inc.</strong> — user accounts, login, and database</li>
-      <li><strong>Stripe Payments Europe, Ltd. / Stripe, Inc.</strong> — payment processing for the Pro plan</li>
-      <li><strong>Render Services, Inc.</strong> — hosting of the conversion API</li>
-      <li><strong>Cloudflare, Inc.</strong> — hosting/delivery of this website</li>
-    </ul>
-    <p>These providers may process data outside the EU/EEA (in particular the United States). Where this is the case, the respective providers apply appropriate safeguards (e.g. EU Standard Contractual Clauses) to ensure an adequate level of data protection.</p>
+    <section id="api">
+      <h2><span class="sec-num">4</span> Use of the conversion API</h2>
+      <p>
+        Each API call checks the submitted API key against our database and updates your remaining credits or
+        monthly usage. Uploaded PDF files are processed only temporarily in memory / temporary storage for the
+        duration of the conversion and are deleted immediately afterwards. We do not permanently store the files
+        you upload or the images we generate.
+      </p>
+      <div class="legal-basis"><strong>Legal basis:</strong> Art. 6(1)(b) GDPR — performance of the usage contract.</div>
+    </section>
 
-    <h2>7. Cookies and local storage</h2>
-    <p>After logging in, your browser stores a session token via Supabase in local storage (localStorage) to keep you logged in. This is technically necessary for the account functionality and is not used for tracking. I do not use analytics or marketing cookies.</p>
+    <section id="payments">
+      <h2><span class="sec-num">5</span> Payment processing (Pro plan)</h2>
+      <p>
+        Payments for the Pro plan are processed by Stripe. Payment details (such as card numbers) are collected and
+        processed exclusively by Stripe — we never receive or store full payment data ourselves. From Stripe we
+        only receive a customer and subscription identifier in order to keep your account status (Free / Pro) up to
+        date. Stripe processes this data as an independent controller under its own privacy policy.
+      </p>
+      <div class="legal-basis"><strong>Legal basis:</strong> Art. 6(1)(b) GDPR — performance of the contract; Art. 6(1)(c) GDPR — legal retention obligations for invoices.</div>
+    </section>
 
-    <h2>8. Retention period</h2>
-    <p>Account and usage data is stored for as long as your account exists. After account deletion, the data is deleted within a reasonable period, unless legal retention obligations apply (e.g. commercial and tax law retention periods for invoice data).</p>
+    <section id="providers">
+      <h2><span class="sec-num">6</span> Service providers</h2>
+      <p>We rely on the following providers to operate the service. Each processes only the data necessary for its function:</p>
+      <ul>
+        <li><strong>Supabase, Inc.</strong> — user accounts, authentication and database</li>
+        <li><strong>Stripe Payments Europe, Ltd. / Stripe, Inc.</strong> — payment processing for the Pro plan</li>
+        <li><strong>Render Services, Inc.</strong> — hosting of the conversion API</li>
+        <li><strong>Cloudflare, Inc.</strong> — hosting, delivery and email routing for the website and domain</li>
+      </ul>
+      <p>
+        Some of these providers may process data outside the EU/EEA, in particular in the United States. Where this
+        is the case, the respective provider applies appropriate safeguards — such as the EU Standard Contractual
+        Clauses — to ensure an adequate level of data protection in accordance with Art. 44 ff. GDPR.
+      </p>
+    </section>
 
-    <h2>9. Your rights</h2>
-    <p>You have the right to access, rectify, erase, and restrict the processing of your data, as well as the right to data portability and the right to object to processing. To exercise these rights, simply contact the email address above. You also have the right to lodge a complaint with a data protection supervisory authority, e.g. the North Rhine-Westphalia State Commissioner for Data Protection and Freedom of Information.</p>
+    <section id="cookies">
+      <h2><span class="sec-num">7</span> Cookies and local storage</h2>
+      <p>
+        After you log in, a session token is stored in your browser's local storage (via Supabase) so that you stay
+        signed in. This is strictly necessary for the account functionality and is not used for tracking. We do not
+        use analytics or marketing cookies, and there is therefore no consent banner.
+      </p>
+    </section>
 
-    <h2>10. Automated decision-making</h2>
-    <p>No automated decision-making within the meaning of Art. 22 GDPR takes place. The automatic checking of credits/usage limits is a purely technical quota check without any legal or similarly significant effect within the meaning of this provision.</p>
-  </section>
-</main>
+    <section id="retention">
+      <h2><span class="sec-num">8</span> Retention period</h2>
+      <p>
+        Account and usage data is retained for as long as your account exists. After you delete your account, the
+        associated data is erased within a reasonable period, unless statutory retention obligations apply — for
+        example, commercial and tax-law retention periods for invoice and payment records.
+      </p>
+    </section>
 
-<footer>
-  <a href="index.html">Home</a> · <a href="impressum.html">Imprint</a> · <a href="agb.html">Terms</a>
-</footer>
+    <section id="rights">
+      <h2><span class="sec-num">9</span> Your rights</h2>
+      <p>Under the GDPR, you have the right to:</p>
+      <ul>
+        <li>access the personal data we hold about you (Art. 15)</li>
+        <li>have inaccurate data corrected (Art. 16)</li>
+        <li>have your data erased (Art. 17)</li>
+        <li>restrict processing (Art. 18)</li>
+        <li>receive your data in a portable format (Art. 20)</li>
+        <li>object to processing (Art. 21)</li>
+      </ul>
+      <p>
+        To exercise any of these rights, simply email <a href="mailto:support@pixelpdf.dev">support@pixelpdf.dev</a>.
+        You also have the right to lodge a complaint with a supervisory authority — for us, the State Commissioner
+        for Data Protection and Freedom of Information of North Rhine-Westphalia (LDI NRW).
+      </p>
+    </section>
+
+    <section id="automated">
+      <h2><span class="sec-num">10</span> Automated decision-making</h2>
+      <p>
+        No automated decision-making with legal or similarly significant effect within the meaning of Art. 22 GDPR
+        takes place. The automatic checking of credits and usage limits is a purely technical quota check and does
+        not produce any such effect.
+      </p>
+    </section>
+
+    <div class="contact-card">
+      <div>
+        <div class="ct-title">A privacy question or request?</div>
+        <p>Email us and we'll handle it promptly.</p>
+      </div>
+      <a class="btn" href="mailto:support@pixelpdf.dev">Contact support</a>
+    </div>
+  </article>
+</div>
+
+<div class="wrap">
+  <footer class="site-footer">
+    <div>© 2026 PixelPDF</div>
+    <div class="links">
+      <a href="index.html">Home</a>
+      <a href="impressum.html">Imprint</a>
+      <a href="agb.html">Terms</a>
+    </div>
+  </footer>
+</div>
+
+<script src="legal.js"></script>
 </body>
 </html>

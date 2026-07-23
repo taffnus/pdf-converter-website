@@ -8,110 +8,115 @@
 <link rel="icon" type="image/png" href="logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg:#0a0a0f;
-    --bg-elevated:#111119;
-    --surface:#15151f;
-    --border:rgba(139,92,246,0.18);
-    --border-strong:rgba(139,92,246,0.4);
-    --text:#f3f2f8;
-    --text-dim:#9997ab;
-    --text-dimmer:#67657a;
-    --purple:#8b5cf6;
-    --pink:#ec4899;
-    --gradient: linear-gradient(135deg, var(--purple), var(--pink));
-    --display: 'Space Grotesk', sans-serif;
-    --body: 'Inter', sans-serif;
-  }
-
-  *{ box-sizing:border-box; margin:0; padding:0; }
-
-  body{
-    background:
-      radial-gradient(ellipse 700px 500px at 20% -10%, rgba(139,92,246,0.16), transparent),
-      var(--bg);
-    color:var(--text);
-    font-family:var(--body);
-    line-height:1.6;
-    -webkit-font-smoothing:antialiased;
-  }
-
-  a{ color:var(--purple); text-decoration:none; }
-  a:hover{ text-decoration:underline; }
-
-  .wrap{ max-width:1080px; margin:0 auto; padding:0 24px; }
-
-  nav{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:24px 0;
-  }
-  .logo{
-    font-family:var(--display); font-weight:600; font-size:19px;
-    display:flex; align-items:center; gap:8px; color:var(--text);
-  }
-  .logo-mark{
-    width:22px; height:22px;
-    display:inline-block;
-    object-fit:contain;
-  }
-
-  main{ max-width:640px; margin:0 auto; padding:32px 24px 96px; }
-
-  h1{
-    font-family:var(--display); font-weight:700; font-size:clamp(28px, 4vw, 36px);
-    letter-spacing:-0.01em; margin-bottom:32px;
-  }
-  h2{
-    font-family:var(--display); font-weight:600; font-size:18px;
-    margin:36px 0 10px;
-  }
-  p{ color:var(--text-dim); font-size:15px; margin-bottom:4px; }
-
-  section{
-    background:var(--surface); border:1px solid var(--border);
-    border-radius:14px; padding:8px 28px 28px;
-  }
-
-  footer{
-    text-align:center; padding:24px; color:var(--text-dimmer); font-size:13px;
-  }
-</style>
+<link rel="stylesheet" href="legal.css">
 </head>
 <body>
 <div class="wrap">
-  <nav>
+  <nav class="site-nav">
     <a href="index.html" class="logo"><img src="logo.png" alt="" class="logo-mark">PixelPDF</a>
+    <a href="index.html" class="back-link">← Back to site</a>
   </nav>
 </div>
 
-<main>
-  <h1>Imprint</h1>
+<header class="doc-header">
+  <div class="wrap">
+    <div class="doc-eyebrow">Legal</div>
+    <h1>Imprint</h1>
+    <div class="doc-meta">
+      <span>Information pursuant to § 5 DDG</span>
+      <span class="sep">·</span>
+      <span>pixelpdf.dev</span>
+    </div>
+  </div>
+</header>
 
-  <section>
-    <h2>Information pursuant to Section 5 DDG (German Digital Services Act)</h2>
-    <p>Yunus Ak</p>
-    <p>Kreuzfeldstraße 34</p>
-    <p>45473 Mülheim an der Ruhr</p>
-    <p>Germany</p>
+<div class="wrap doc-layout">
+  <aside class="toc">
+    <div class="toc-title">Contents</div>
+    <nav>
+      <a href="#provider">1. Service provider</a>
+      <a href="#contact">2. Contact</a>
+      <a href="#responsible">3. Responsible for content</a>
+      <a href="#odr">4. Dispute resolution</a>
+      <a href="#liability">5. Liability</a>
+    </nav>
+  </aside>
 
-    <h2>Contact</h2>
-    <p>Email: support@pixelpdf.dev</p>
+  <article class="doc">
+    <p class="doc-intro">
+      This imprint identifies the operator of PixelPDF (pixelpdf.dev) as required by German law
+      (§ 5 Digital Services Act / DDG and § 18 Interstate Media Treaty / MStV).
+    </p>
 
-    <h2>Responsible for content pursuant to Section 18(2) MStV (German Interstate Media Treaty)</h2>
-    <p>Yunus Ak (address as above)</p>
+    <section id="provider">
+      <h2><span class="sec-num">1</span> Service provider</h2>
+      <div class="info-card">
+        <div class="row"><div class="k">Operator</div><div class="v">Yunus Ak</div></div>
+        <div class="row"><div class="k">Address</div><div class="v">Kreuzfeldstraße 34<br>45473 Mülheim an der Ruhr<br>Germany</div></div>
+      </div>
+    </section>
 
-    <h2>EU Online Dispute Resolution</h2>
-    <p>The European Commission provides a platform for online dispute resolution (ODR): <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener">ec.europa.eu/consumers/odr</a>.</p>
-    <p>I am not willing or obliged to participate in dispute resolution proceedings before a consumer arbitration board.</p>
+    <section id="contact">
+      <h2><span class="sec-num">2</span> Contact</h2>
+      <div class="info-card">
+        <div class="row"><div class="k">Email</div><div class="v"><a href="mailto:support@pixelpdf.dev">support@pixelpdf.dev</a></div></div>
+        <div class="row"><div class="k">Website</div><div class="v"><a href="https://pixelpdf.dev">pixelpdf.dev</a></div></div>
+      </div>
+      <p>Support requests are handled by email. We aim to respond within a few business days.</p>
+    </section>
 
-    <h2>Liability for content</h2>
-    <p>As a service provider, I am responsible for my own content on these pages under general law. I assume no liability for the content of external links; the operators of the linked pages are solely responsible for their content.</p>
-  </section>
-</main>
+    <section id="responsible">
+      <h2><span class="sec-num">3</span> Responsible for content</h2>
+      <p>Responsible for the content of this website pursuant to § 18(2) MStV: Yunus Ak, address as stated above.</p>
+    </section>
 
-<footer>
-  <a href="index.html">Home</a> · <a href="datenschutz.html">Privacy Policy</a> · <a href="agb.html">Terms</a>
-</footer>
+    <section id="odr">
+      <h2><span class="sec-num">4</span> Dispute resolution</h2>
+      <p>
+        The European Commission provides a platform for online dispute resolution (ODR), available at
+        <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener">ec.europa.eu/consumers/odr</a>.
+      </p>
+      <p>
+        We are neither willing nor obliged to participate in dispute resolution proceedings before a
+        consumer arbitration board (Verbraucherschlichtungsstelle).
+      </p>
+    </section>
+
+    <section id="liability">
+      <h2><span class="sec-num">5</span> Liability for content and links</h2>
+      <p>
+        As a service provider, we are responsible for our own content on these pages under the general laws.
+        However, we are not obliged to monitor transmitted or stored third-party information, or to investigate
+        circumstances that indicate illegal activity.
+      </p>
+      <p>
+        Our website may contain links to external websites operated by third parties, over whose content we have
+        no control. We therefore accept no liability for such external content. The respective provider or operator
+        of the linked pages is always responsible for their content.
+      </p>
+    </section>
+
+    <div class="contact-card">
+      <div>
+        <div class="ct-title">Questions about this imprint?</div>
+        <p>Reach us any time and we'll get back to you.</p>
+      </div>
+      <a class="btn" href="mailto:support@pixelpdf.dev">Contact support</a>
+    </div>
+  </article>
+</div>
+
+<div class="wrap">
+  <footer class="site-footer">
+    <div>© 2026 PixelPDF</div>
+    <div class="links">
+      <a href="index.html">Home</a>
+      <a href="datenschutz.html">Privacy Policy</a>
+      <a href="agb.html">Terms</a>
+    </div>
+  </footer>
+</div>
+
+<script src="legal.js"></script>
 </body>
 </html>
