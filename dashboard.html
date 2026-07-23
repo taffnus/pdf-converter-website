@@ -202,6 +202,28 @@
   .mini-code .k{ color:var(--purple); }
   .mini-code .s{ color:var(--pink); }
   .mini-code .c{ color:var(--text-dimmer); }
+  .help-steps strong{ color:var(--text); font-weight:600; }
+
+  .api-notes-list{
+    list-style:none; margin:16px 0 0; padding:0;
+    display:grid; gap:1px; background:var(--border);
+    border:1px solid var(--border); border-radius:10px; overflow:hidden;
+  }
+  .api-notes-list li{
+    background:var(--bg-elevated); padding:12px 16px;
+    font-size:13px; color:var(--text-dim); line-height:1.55;
+  }
+  .api-notes-list strong{ color:var(--text); font-weight:600; }
+  .api-notes-list code{
+    font-family:var(--mono); font-size:11.5px; color:var(--text);
+    background:var(--surface); padding:2px 5px; border-radius:4px;
+  }
+
+  .section-label{
+    font-family:var(--display); font-size:14px; font-weight:600;
+    color:var(--text-dim); text-transform:uppercase; letter-spacing:.04em;
+    margin:36px 0 14px;
+  }
 
   footer{
     text-align:center; padding:24px; color:var(--text-dimmer); font-size:13px;
@@ -280,8 +302,8 @@
     `;
 
     mainContent.innerHTML = `
-      <h1>Your dashboard</h1>
-      <p class="page-sub">Your API key, plan, and usage at a glance.</p>
+      <h1>Dashboard</h1>
+      <p class="page-sub">Your API key, plan, and usage — plus how to wire it into Make or Zapier.</p>
 
       ${bannerHtml}
 
@@ -303,23 +325,31 @@
           <button class="copy-btn" id="toggle-key-btn" type="button">Show</button>
           <button class="copy-btn" id="copy-key-btn" type="button">Copy</button>
         </div>
-        <div class="key-hint">Use it as the <code style="font-family:var(--mono)">X-API-Key</code> header in your Make/Zapier HTTP module.</div>
+        <div class="key-hint">Keep this secret — it authorizes conversions against your account. You can copy it without revealing it.</div>
       </div>
 
-      <div class="card" style="margin-top:20px;">
-        <h3>Using your API key</h3>
+      <div class="section-label">Quickstart</div>
+
+      <div class="card">
+        <h3>Use it in Make or Zapier</h3>
         <ol class="help-steps">
-          <li><span>Add an HTTP module (POST request) to your Make or Zapier scenario.</span></li>
-          <li><span>Set the <code>X-API-Key</code> header to your API key above.</span></li>
-          <li><span>Attach your PDF as the <code>file</code> field (multipart/form-data) and send — you'll get a PNG straight back.</span></li>
+          <li><span>Copy your API key above — click <strong>Copy</strong> (revealing it first is optional).</span></li>
+          <li><span>In your scenario, add an <strong>HTTP → Make a request</strong> module and set the method to <code>POST</code>.</span></li>
+          <li><span>Set the URL to <code>${API_BASE_URL}/convert</code> and add a header <code>X-API-Key</code> with your key.</span></li>
+          <li><span>Set the body type to <code>multipart/form-data</code>, add a field named <code>file</code> holding your PDF, then run it.</span></li>
         </ol>
         <div class="mini-code"><span class="k">POST</span> ${API_BASE_URL}/convert
 
 <span class="c"># Header</span>
 X-API-Key: <span class="s">your_api_key</span>
 
-<span class="c"># Body (multipart/form-data)</span>
+<span class="c"># Body — multipart/form-data</span>
 file: <span class="s">your_file.pdf</span></div>
+        <ul class="api-notes-list">
+          <li><strong>Response:</strong> a single-page PDF returns a <code>PNG</code> image; a multi-page PDF returns a <code>ZIP</code> with one PNG per page.</li>
+          <li><strong>Limits:</strong> up to 5 pages and 10&nbsp;MB per file. Larger files are rejected with <code>413</code>.</li>
+          <li><strong>If a request fails:</strong> <code>402</code> means you're out of credits — upgrade to Pro below to keep converting.</li>
+        </ul>
       </div>
 
       ${upgradeHtml}

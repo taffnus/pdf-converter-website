@@ -264,6 +264,26 @@
     font-family:var(--mono); font-size:12.5px; color:var(--text);
     background:var(--bg-elevated); padding:2px 6px; border-radius:4px;
   }
+  .steps-list strong{ color:var(--text); font-weight:600; }
+
+  .api-notes{
+    max-width:640px; margin:20px auto 0;
+    display:grid; gap:1px; background:var(--border);
+    border:1px solid var(--border); border-radius:12px; overflow:hidden;
+  }
+  .api-notes .note{
+    background:var(--bg-elevated); padding:14px 18px;
+    font-size:13.5px; color:var(--text-dim); line-height:1.55;
+  }
+  .api-notes .note-k{
+    display:inline-block; min-width:78px;
+    font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--purple); vertical-align:baseline;
+  }
+  .api-notes code{
+    font-family:var(--mono); font-size:12px; color:var(--text);
+    background:var(--surface); padding:2px 6px; border-radius:4px;
+  }
 
   /* ---- Footer ---- */
   footer{
@@ -292,7 +312,7 @@
     <div class="nav-links">
       <a href="#features">Features</a>
       <a href="#pricing">Pricing</a>
-      <a href="#docs">API</a>
+      <a href="#docs">Docs</a>
     </div>
     <div class="nav-actions">
       <a href="login.html" class="nav-login">Log in</a>
@@ -304,10 +324,10 @@
     <div>
       <div class="eyebrow">For Make &amp; Zapier</div>
       <h1>PDF to PNG.<br>In <span class="accent">one request.</span></h1>
-      <p>A small, trustworthy conversion API built for no-code workflows. File in, image back — no queues, no timeouts, no surprises.</p>
+      <p>A focused, reliable PDF-to-PNG API for no-code automations. Send a file, get an image back in the same response — no queues, no webhooks, no surprises.</p>
       <div class="cta-row">
         <a href="login.html" class="btn-primary">Get 200 free credits</a>
-        <a href="#docs" class="btn-secondary">View the API</a>
+        <a href="#docs" class="btn-secondary">Read the docs</a>
       </div>
       <div class="hero-note">No credit card required · Up to 5 pages per file</div>
     </div>
@@ -343,15 +363,15 @@
   <section class="features" id="features">
     <div class="feature">
       <h3>Built for small files</h3>
-      <p>Every request finishes in under a second, so it fits comfortably inside Make and Zapier's own timeouts.</p>
+      <p>Each conversion completes in well under a second — comfortably inside the request timeouts Make and Zapier impose.</p>
     </div>
     <div class="feature">
-      <h3>One request, one response</h3>
-      <p>Send a PDF, get a PNG back immediately. No webhooks to configure, no status polling.</p>
+      <h3>Synchronous by design</h3>
+      <p>Send a PDF, get the image back in the same HTTP response. No webhooks to register, no status to poll.</p>
     </div>
     <div class="feature">
-      <h3>Clear limits, no surprises</h3>
-      <p>Every plan has a plain, visible limit. Nothing fails silently — you always see why.</p>
+      <h3>Predictable limits</h3>
+      <p>Every plan states its limit up front. Requests never fail silently — errors are explicit and easy to read.</p>
     </div>
   </section>
 
@@ -407,30 +427,37 @@
 
   <section class="code-section" id="docs">
     <div class="section-head">
-      <div class="eyebrow">API</div>
-      <h2>Wired up in two minutes</h2>
-      <p>One HTTP module in Make or Zapier is all it takes.</p>
+      <div class="eyebrow">Documentation</div>
+      <h2>One endpoint is the whole API</h2>
+      <p>Send a PDF over HTTP and receive the image in the same response. No SDK to install, nothing to configure.</p>
     </div>
     <ol class="steps-list">
-      <li><span>Add an HTTP module (POST request) to your Make or Zapier scenario.</span></li>
-      <li><span>Set the <code>X-API-Key</code> header to the API key from your dashboard.</span></li>
-      <li><span>Attach your PDF as the <code>file</code> field (multipart/form-data) and run it — you'll get a PNG straight back.</span></li>
+      <li><span>Create a free account and copy your API key from the <a href="login.html" style="color:var(--purple);">dashboard</a>.</span></li>
+      <li><span>In Make or Zapier, add an <strong>HTTP → Make a request</strong> module set to <code>POST</code>.</span></li>
+      <li><span>Point it at <code>https://api.pixelpdf.dev/convert</code> and add the header <code>X-API-Key</code> with your key.</span></li>
+      <li><span>Attach your PDF as a <code>file</code> field using <code>multipart/form-data</code>, then run the scenario.</span></li>
     </ol>
     <div class="code-card">
       <div class="code-head">
         <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-        <span>HTTP module configuration</span>
+        <span>POST /convert</span>
       </div>
       <pre><span class="k">POST</span> https://api.pixelpdf.dev/convert
 
 <span class="c"># Header</span>
 X-API-Key: <span class="s">your_api_key</span>
 
-<span class="c"># Body (multipart/form-data)</span>
+<span class="c"># Body — multipart/form-data</span>
 file: <span class="s">your_file.pdf</span>
 
 <span class="c"># Response</span>
-<span class="k">200 OK</span>  →  image/png</pre>
+<span class="k">200 OK</span>  →  image/png   <span class="c"># single-page PDF</span>
+<span class="k">200 OK</span>  →  application/zip <span class="c"># multi-page PDF</span></pre>
+    </div>
+    <div class="api-notes">
+      <div class="note"><span class="note-k">Response</span> A single-page PDF returns one <code>image/png</code>. A multi-page PDF returns a <code>.zip</code> containing one PNG per page.</div>
+      <div class="note"><span class="note-k">Limits</span> Up to 5 pages and 10&nbsp;MB per file. Oversized files return <code>413</code>.</div>
+      <div class="note"><span class="note-k">Errors</span> <code>401</code> invalid key · <code>402</code> out of credits · <code>429</code> fair-use limit reached.</div>
     </div>
   </section>
 
