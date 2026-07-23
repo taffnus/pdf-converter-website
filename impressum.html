@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Imprint — PixelPDF</title>
 <meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -50,9 +51,9 @@
     display:flex; align-items:center; gap:8px; color:var(--text);
   }
   .logo-mark{
-    width:22px; height:22px; border-radius:6px;
-    background:var(--gradient);
+    width:22px; height:22px;
     display:inline-block;
+    object-fit:contain;
   }
 
   main{ max-width:640px; margin:0 auto; padding:32px 24px 96px; }
@@ -80,7 +81,7 @@
 <body>
 <div class="wrap">
   <nav>
-    <a href="index.html" class="logo"><span class="logo-mark"></span>PixelPDF</a>
+    <a href="index.html" class="logo"><img src="logo.png" alt="" class="logo-mark">PixelPDF</a>
   </nav>
 </div>
 
