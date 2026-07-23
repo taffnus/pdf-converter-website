@@ -399,7 +399,7 @@
           <li>Dedicated support</li>
           <li>Tailored onboarding</li>
         </ul>
-        <a href="mailto:easyconvertsupport@gmail.com?subject=PixelPDF%20Enterprise" class="btn-secondary" id="enterprise-contact-btn">Contact us</a>
+        <a href="mailto:support@pixelpdf.dev?subject=PixelPDF%20Enterprise" class="btn-secondary" id="enterprise-contact-btn">Contact us</a>
       </div>
     </div>
     <div class="price-footnote">*A fair-use limit of 2,000 conversions/month keeps the service stable for everyone. Need more? Just reach out.</div>
@@ -421,7 +421,7 @@
         <span class="dot"></span><span class="dot"></span><span class="dot"></span>
         <span>HTTP module configuration</span>
       </div>
-      <pre><span class="k">POST</span> https://pdf-converter-api-0g8x.onrender.com/convert
+      <pre><span class="k">POST</span> https://api.pixelpdf.dev/convert
 
 <span class="c"># Header</span>
 X-API-Key: <span class="s">your_api_key</span>
@@ -461,7 +461,7 @@ file: <span class="s">your_file.pdf</span>
   const enterpriseBtn = document.getElementById("enterprise-contact-btn");
   if (enterpriseBtn) {
     enterpriseBtn.addEventListener("click", () => {
-      navigator.clipboard.writeText("easyconvertsupport@gmail.com").catch(() => {});
+      navigator.clipboard.writeText("support@pixelpdf.dev").catch(() => {});
       const original = enterpriseBtn.textContent;
       enterpriseBtn.textContent = "Email copied!";
       setTimeout(() => { enterpriseBtn.textContent = original; }, 2000);
