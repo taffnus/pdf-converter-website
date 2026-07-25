@@ -123,13 +123,13 @@
   }
 
   .api-key-row{
-    display:flex; align-items:center; gap:10px;
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
     background:var(--bg-elevated); border:1px solid var(--border);
     border-radius:9px; padding:12px 14px; margin-top:4px;
   }
   .api-key-row code{
     font-family:var(--mono); font-size:13.5px; color:var(--text);
-    flex:1; overflow-x:auto; white-space:nowrap;
+    flex:1; min-width:200px; overflow-x:auto; white-space:nowrap;
   }
   .copy-btn{
     background:var(--surface); border:1px solid var(--border); color:var(--text-dim);
@@ -138,6 +138,8 @@
     transition:border-color .15s, color .15s;
   }
   .copy-btn:hover{ border-color:var(--border-strong); color:var(--text); }
+  .copy-btn.danger:hover{ border-color:rgba(248,113,113,0.45); color:var(--red); }
+  .copy-btn:disabled{ opacity:.6; cursor:default; }
   .key-hint{ font-size:12.5px; color:var(--text-dimmer); margin-top:10px; }
 
   .upgrade-card{
@@ -324,8 +326,9 @@
           <code id="api-key-value">${"•".repeat(28)}</code>
           <button class="copy-btn" id="toggle-key-btn" type="button">Show</button>
           <button class="copy-btn" id="copy-key-btn" type="button">Copy</button>
+          <button class="copy-btn danger" id="regenerate-key-btn" type="button">Regenerate</button>
         </div>
-        <div class="key-hint">Keep this secret — it authorizes conversions against your account. You can copy it without revealing it.</div>
+        <div class="key-hint">Keep this secret — it authorizes conversions against your account. You can copy it without revealing it. If it ever leaks, <strong>Regenerate</strong> replaces it immediately.</div>
       </div>
 
       <div class="section-label">Quickstart</div>
@@ -369,6 +372,44 @@ file: <span class="s">your_file.pdf</span></div>
       const btn = document.getElementById("copy-key-btn");
       btn.textContent = "Copied!";
       setTimeout(() => { btn.textContent = "Copy"; }, 1500);
+    });
+
+    // Neuen Key anfordern. Der Schreibzugriff läuft über die API, nicht über Supabase direkt:
+    // der Browser darf laut RLS nicht in "profiles" schreiben.
+    const regenerateBtn = document.getElementById("regenerate-key-btn");
+    regenerateBtn.addEventListener("click", async () => {
+      const confirmed = confirm(
+        "Create a new API key?\n\n" +
+        "Your current key stops working immediately. Any Make or Zapier scenario still using " +
+        "it will fail until you paste the new key in."
+      );
+      if (!confirmed) return;
+
+      regenerateBtn.disabled = true;
+      regenerateBtn.textContent = "Working…";
+      try {
+        const { data: { session } } = await sb.auth.getSession();
+        const res = await fetch(`${API_BASE_URL}/account/regenerate-api-key`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${session.access_token}` },
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "Could not create a new key.");
+
+        profile.api_key = data.api_key;
+        keyVisible = true;                       // neuen Key direkt zeigen, er muss ja kopiert werden
+        keyValueEl.textContent = profile.api_key;
+        toggleKeyBtn.textContent = "Hide";
+        regenerateBtn.textContent = "New key ready";
+      } catch (err) {
+        alert(err.message || "Something went wrong. Please try again.");
+        regenerateBtn.textContent = "Regenerate";
+      } finally {
+        setTimeout(() => {
+          regenerateBtn.textContent = "Regenerate";
+          regenerateBtn.disabled = false;
+        }, 2500);
+      }
     });
 
     const upgradeBtn = document.getElementById("upgrade-btn");
