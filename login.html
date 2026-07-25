@@ -4,178 +4,104 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Log in — PixelPDF</title>
-<link rel="icon" type="image/png" href="logo.png">
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<link rel="icon" href="logo.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
 <style>
-  :root{
-    --bg:#0a0a0f;
-    --bg-elevated:#111119;
-    --surface:#15151f;
-    --surface-hover:#1b1b28;
-    --border:rgba(139,92,246,0.18);
-    --border-strong:rgba(139,92,246,0.4);
-    --text:#f3f2f8;
-    --text-dim:#9997ab;
-    --text-dimmer:#67657a;
-    --purple:#8b5cf6;
-    --pink:#ec4899;
-    --red:#f87171;
-    --green:#4ade80;
-    --gradient: linear-gradient(135deg, var(--purple), var(--pink));
-    --mono: 'JetBrains Mono', monospace;
-    --display: 'Space Grotesk', sans-serif;
-    --body: 'Inter', sans-serif;
-  }
-
-  *{ box-sizing:border-box; margin:0; padding:0; }
-
-  body{
-    background:
-      radial-gradient(ellipse 700px 500px at 20% -10%, rgba(139,92,246,0.16), transparent),
-      radial-gradient(ellipse 600px 500px at 90% 10%, rgba(236,72,153,0.10), transparent),
-      var(--bg);
-    color:var(--text);
-    font-family:var(--body);
-    line-height:1.5;
-    -webkit-font-smoothing:antialiased;
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-  }
-
-  .bg-grid{
-    position:fixed; inset:0; z-index:-1;
-    background-image:
-      linear-gradient(rgba(139,92,246,0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(139,92,246,0.05) 1px, transparent 1px);
-    background-size: 64px 64px;
-    mask-image: radial-gradient(ellipse 900px 600px at 50% 0%, black 40%, transparent 75%);
-  }
-
-  a{ color:inherit; text-decoration:none; }
-
-  .wrap{ max-width:1080px; margin:0 auto; padding:0 24px; width:100%; }
-
-  nav{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:24px 0;
-  }
-  .logo{
-    font-family:var(--display); font-weight:600; font-size:19px;
-    display:flex; align-items:center; gap:8px;
-  }
-  .logo-mark{
-    width:22px; height:22px;
-    display:inline-block;
-    object-fit:contain;
-  }
+  body{ display:flex; flex-direction:column; min-height:100vh; }
 
   .center{
-    flex:1;
-    display:flex; align-items:center; justify-content:center;
-    padding:32px 24px 64px;
+    flex:1; display:flex; align-items:center; justify-content:center;
+    padding:48px 28px 72px;
     visibility:hidden;
   }
   body.ready .center{ visibility:visible; }
 
-  .auth-card{
+  /* Die Karte ist ein Blatt Papier auf dem Scannerbett, genau wie auf der
+     Startseite. Die cyanfarbene Linie ueberstreicht sie einmal beim Laden:
+     dieselbe Geste, die dort das Dokument sichtbar macht. */
+  .auth-sheet{
+    position:relative; overflow:hidden;
     width:100%; max-width:400px;
-    background:var(--surface); border:1px solid var(--border);
-    border-radius:16px; padding:36px 32px;
-  }
-  .auth-card h1{
-    font-family:var(--display); font-weight:600; font-size:22px;
-    margin-bottom:6px;
-  }
-  .auth-card .sub{
-    color:var(--text-dim); font-size:14px; margin-bottom:26px;
+    background:var(--sheet); border:1px solid var(--rule-sheet);
+    border-radius:3px; box-shadow:var(--sheet-shadow);
+    padding:38px 34px 32px;
   }
 
-  label{
-    display:block; font-size:13px; color:var(--text-dim); margin-bottom:6px;
-  }
-  .field{ margin-bottom:16px; }
-  input[type="email"], input[type="password"]{
-    width:100%; background:var(--bg-elevated); border:1px solid var(--border);
-    border-radius:9px; padding:11px 13px; color:var(--text); font-size:14.5px;
-    font-family:var(--body);
-    transition:border-color .15s;
-  }
-  input[type="email"]:focus, input[type="password"]:focus{
-    outline:none; border-color:var(--border-strong);
-  }
-
-  .btn-primary{
-    width:100%; padding:12px 22px; border-radius:9px; font-size:14.5px; font-weight:600;
-    background:var(--gradient); color:#fff; border:none; cursor:pointer;
-    box-shadow:0 0 0 1px rgba(255,255,255,0.06) inset, 0 8px 24px -8px rgba(139,92,246,0.55);
-    transition:transform .15s, opacity .15s;
-    margin-top:6px;
-  }
-  .btn-primary:hover{ transform:translateY(-1px); }
-  .btn-primary:disabled{ opacity:.6; cursor:default; transform:none; }
+  .auth-sheet h1{ font-size:24px; font-weight:700; margin-bottom:7px; }
+  .auth-sub{ color:var(--ink-2); font-size:15px; margin-bottom:28px; }
 
   .btn-google{
-    width:100%; padding:11px 22px; border-radius:9px; font-size:14.5px; font-weight:500;
-    background:var(--bg-elevated); border:1px solid var(--border); color:var(--text);
-    display:flex; align-items:center; justify-content:center; gap:10px;
-    cursor:pointer; transition:border-color .15s, background .15s;
-    font-family:var(--body);
+    width:100%; padding:12px 22px; border-radius:2px;
+    font-family:var(--display); font-stretch:112%; font-weight:600; font-size:15px;
+    background:#fff; border:1px solid var(--rule); color:var(--ink);
+    display:flex; align-items:center; justify-content:center; gap:11px;
+    cursor:pointer; transition:border-color .15s ease, background-color .15s ease;
   }
-  .btn-google:hover{ border-color:var(--border-strong); background:var(--surface-hover); }
+  .btn-google:hover{ border-color:var(--ink); background:#fbfcfb; }
 
   .divider{
-    display:flex; align-items:center; gap:12px; margin:20px 0;
-    font-size:12.5px; color:var(--text-dimmer);
+    display:flex; align-items:center; gap:14px; margin:22px 0;
+    font-family:var(--mono); font-size:10.5px; font-weight:500;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--ink-3);
   }
-  .divider::before, .divider::after{
-    content:''; flex:1; height:1px; background:var(--border);
-  }
+  .divider::before, .divider::after{ content:''; flex:1; height:1px; background:var(--rule-sheet); }
 
-  .switch-mode{
-    text-align:center; margin-top:20px; font-size:13.5px; color:var(--text-dim);
-  }
+  .switch-mode{ text-align:center; margin-top:22px; font-size:14px; color:var(--ink-2); }
   .switch-mode button{
-    background:none; border:none; color:var(--purple); font-size:13.5px;
-    font-family:var(--body); font-weight:600; cursor:pointer; padding:0;
+    background:none; border:none; padding:0; cursor:pointer;
+    font-family:var(--display); font-stretch:100%; font-weight:600; font-size:14px;
+    color:var(--cyan-ink); text-decoration:underline; text-underline-offset:3px;
   }
-  .switch-mode button:hover{ color:var(--pink); }
+  .switch-mode button:hover{ color:var(--ink); }
 
-  .message{
-    font-size:13.5px; border-radius:9px; padding:10px 13px; margin-bottom:16px;
-    display:none;
+  .terms-line{
+    text-align:center; font-size:12.5px; color:var(--ink-3);
+    margin-top:24px; padding-top:20px; border-top:1px solid var(--rule-sheet);
   }
-  .message.error{
-    display:block; background:rgba(248,113,113,0.1); border:1px solid rgba(248,113,113,0.3); color:var(--red);
-  }
-  .message.success{
-    display:block; background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.3); color:var(--green);
-  }
+  .terms-line a{ color:var(--ink-2); text-decoration:underline; text-underline-offset:3px; }
+  .terms-line a:hover{ color:var(--ink); }
 
-  footer{
-    text-align:center; padding:24px; color:var(--text-dimmer); font-size:13px;
+  .auth-foot{
+    text-align:center; padding:0 28px 40px;
+    font-size:13px; color:var(--ink-3);
   }
+  .auth-foot a:hover{ color:var(--ink); }
 </style>
 </head>
 <body>
-<div class="bg-grid"></div>
 
-<div class="wrap">
-  <nav>
-    <a href="index.html" class="logo"><img src="logo.png" alt="" class="logo-mark">PixelPDF</a>
-  </nav>
-</div>
+<header class="site-head">
+  <div class="wrap">
+    <a href="index.html" class="brand">
+      <svg class="brand-mark" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M4.6 2.6h8.8l6 6v12.8h-14.8z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        <path d="M13.4 2.6v6h6" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        <rect x="7.6" y="12.4" width="3.2" height="3.2" fill="#00a3e0"/>
+        <rect x="11.2" y="12.4" width="3.2" height="3.2" fill="#00a3e0" opacity=".45"/>
+        <rect x="7.6" y="16" width="3.2" height="3.2" fill="#00a3e0" opacity=".45"/>
+        <rect x="11.2" y="16" width="3.2" height="3.2" fill="#00a3e0"/>
+      </svg>
+      <span>PixelPDF</span>
+    </a>
+    <a href="index.html" class="btn btn-quiet btn-small">Back to site</a>
+  </div>
+</header>
 
 <div class="center">
-  <div class="auth-card">
-    <h1 id="form-title">Welcome back</h1>
-    <p class="sub" id="form-sub">Log in to see your dashboard.</p>
+  <div class="auth-sheet" id="auth-sheet">
+    <div class="scanline"></div>
 
-    <div class="message" id="message"></div>
+    <h1 id="form-title">Welcome back</h1>
+    <p class="auth-sub" id="form-sub">Log in to see your dashboard.</p>
+
+    <div class="msg" id="message"></div>
 
     <button type="button" id="google-btn" class="btn-google">
-      <svg width="18" height="18" viewBox="0 0 18 18">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
         <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84c-.21 1.13-.84 2.09-1.8 2.73v2.27h2.91c1.7-1.57 2.69-3.88 2.69-6.64z"/>
         <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.91-2.27c-.81.54-1.85.86-3.05.86-2.34 0-4.33-1.58-5.04-3.71H.96v2.34C2.44 15.98 5.48 18 9 18z"/>
         <path fill="#FBBC05" d="M3.96 10.7c-.18-.54-.28-1.11-.28-1.7s.1-1.16.28-1.7V4.96H.96A8.996 8.996 0 000 9c0 1.45.35 2.83.96 4.04l3-2.34z"/>
@@ -184,7 +110,7 @@
       Continue with Google
     </button>
 
-    <div class="divider">or continue with email</div>
+    <div class="divider">or use email</div>
 
     <form id="auth-form">
       <div class="field">
@@ -195,7 +121,7 @@
         <label for="password">Password</label>
         <input type="password" id="password" required autocomplete="current-password" minlength="6">
       </div>
-      <button type="submit" class="btn-primary" id="submit-btn">Log in</button>
+      <button type="submit" class="btn btn-solid btn-block" id="submit-btn">Log in</button>
     </form>
 
     <div class="switch-mode">
@@ -203,13 +129,18 @@
       <button type="button" id="switch-btn">Sign up</button>
     </div>
 
-    <p style="text-align:center; font-size:12px; color:var(--text-dimmer); margin-top:18px;">
-      By continuing, you agree to our <a href="agb.html" style="color:inherit; text-decoration:underline;">Terms</a> and <a href="datenschutz.html" style="color:inherit; text-decoration:underline;">Privacy Policy</a>.
+    <p class="terms-line">
+      By continuing you agree to our <a href="agb.html">Terms</a> and <a href="datenschutz.html">Privacy Policy</a>.
     </p>
   </div>
 </div>
 
-<footer>© 2026 PixelPDF · <a href="impressum.html" style="color:inherit;">Imprint</a> · <a href="datenschutz.html" style="color:inherit;">Privacy Policy</a> · <a href="agb.html" style="color:inherit;">Terms</a></footer>
+<footer class="auth-foot">
+  © 2026 PixelPDF ·
+  <a href="impressum.html">Imprint</a> ·
+  <a href="datenschutz.html">Privacy Policy</a> ·
+  <a href="agb.html">Terms</a>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-client.js"></script>
@@ -225,13 +156,14 @@
   const sub = document.getElementById("form-sub");
   const switchText = document.getElementById("switch-text");
   const switchBtn = document.getElementById("switch-btn");
+  const authSheet = document.getElementById("auth-sheet");
 
   function showMessage(text, type){
     messageBox.textContent = text;
-    messageBox.className = "message " + type;
+    messageBox.className = "msg " + type;
   }
   function clearMessage(){
-    messageBox.className = "message";
+    messageBox.className = "msg";
     messageBox.textContent = "";
   }
 
@@ -241,7 +173,7 @@
       return "Please choose a password with at least 6 characters.";
     }
     if (/already registered|already exists/i.test(msg)) {
-      return "An account with this email already exists — try logging in instead.";
+      return "An account with this email already exists. Try logging in instead.";
     }
     if (/invalid login credentials/i.test(msg)) {
       return "Incorrect email or password.";
@@ -250,7 +182,7 @@
       return "Please enter a valid email address.";
     }
     if (/email not confirmed/i.test(msg)) {
-      return "Please confirm your email address first — check your inbox.";
+      return "Please confirm your email address first. Check your inbox.";
     }
     return "Something went wrong. Please try again.";
   }
@@ -262,28 +194,42 @@
     });
   });
 
+  // Beim Moduswechsel wischen Titel und Unterzeile kurz ein, damit sichtbar
+  // ist, dass sich das Formular geaendert hat und nicht nur ein Wort.
+  function replayWipe(el){
+    el.classList.remove("wipe");
+    void el.offsetWidth;
+    el.classList.add("wipe");
+  }
+
   switchBtn.addEventListener("click", () => {
     mode = mode === "login" ? "signup" : "login";
     clearMessage();
     if (mode === "signup") {
       title.textContent = "Create your account";
-      sub.textContent = "200 free credits, no credit card required.";
+      sub.textContent = "200 free conversions. Takes about a minute.";
       submitBtn.textContent = "Sign up";
       switchText.textContent = "Already have an account?";
       switchBtn.textContent = "Log in";
+      passwordInput.setAttribute("autocomplete", "new-password");
     } else {
       title.textContent = "Welcome back";
       sub.textContent = "Log in to see your dashboard.";
       submitBtn.textContent = "Log in";
       switchText.textContent = "Don't have an account?";
       switchBtn.textContent = "Sign up";
+      passwordInput.setAttribute("autocomplete", "current-password");
     }
+    replayWipe(title);
+    replayWipe(sub);
   });
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     clearMessage();
     submitBtn.disabled = true;
+    const originalLabel = submitBtn.textContent;
+    submitBtn.textContent = mode === "signup" ? "Creating your account…" : "Logging in…";
 
     const email = emailInput.value.trim();
     const password = passwordInput.value;
@@ -296,7 +242,7 @@
         if (data.session) {
           window.location.href = "dashboard.html";
         } else {
-          showMessage("Almost there — please confirm your email address using the link we just sent you.", "success");
+          showMessage("Almost there. Confirm your email address using the link we just sent you.", "success");
         }
       } else {
         const { error } = await sb.auth.signInWithPassword({ email, password });
@@ -307,17 +253,32 @@
       showMessage(friendlyAuthError(err), "error");
     } finally {
       submitBtn.disabled = false;
+      submitBtn.textContent = originalLabel;
     }
   });
 
-  // Already logged in? Skip straight to the dashboard instead of flashing this form.
-  sb.auth.getSession().then(({ data }) => {
-    if (data.session) {
-      window.location.href = "dashboard.html";
-    } else {
-      document.body.classList.add("ready");
-    }
-  });
+  // Schon eingeloggt? Direkt ins Dashboard, statt dieses Formular aufblitzen
+  // zu lassen. Der Timer ist die Reissleine, falls das Supabase-CDN ausfaellt.
+  let revealed = false;
+  function reveal(){
+    if (revealed) return;
+    revealed = true;
+    if (authSheet) authSheet.classList.add("is-scanned");
+    document.body.classList.add("ready");
+  }
+  setTimeout(reveal, 1200);
+
+  try {
+    sb.auth.getSession().then(({ data }) => {
+      if (data.session) {
+        window.location.href = "dashboard.html";
+      } else {
+        reveal();
+      }
+    }).catch(reveal);
+  } catch (e) {
+    reveal();
+  }
 </script>
 </body>
 </html>

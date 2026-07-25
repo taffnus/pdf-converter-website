@@ -3,495 +3,396 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PixelPDF — PDF to PNG, in one request</title>
-<link rel="icon" type="image/png" href="logo.png">
+<title>PixelPDF — PDF to PNG in one request</title>
+<meta name="description" content="Turn a PDF into a PNG with one request. Built for Make and Zapier: about a minute to set up, nothing to configure. 200 free conversions, no card.">
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<link rel="icon" href="logo.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
 <style>
-  :root{
-    --bg:#0a0a0f;
-    --bg-elevated:#111119;
-    --surface:#15151f;
-    --surface-hover:#1b1b28;
-    --border:rgba(139,92,246,0.18);
-    --border-strong:rgba(139,92,246,0.4);
-    --text:#f3f2f8;
-    --text-dim:#9997ab;
-    --text-dimmer:#67657a;
-    --purple:#8b5cf6;
-    --pink:#ec4899;
-    --gradient: linear-gradient(135deg, var(--purple), var(--pink));
-    --mono: 'JetBrains Mono', monospace;
-    --display: 'Space Grotesk', sans-serif;
-    --body: 'Inter', sans-serif;
-  }
+  /* Nur was es ausschliesslich auf der Startseite gibt. Alles Gemeinsame
+     steht in site.css. */
 
-  *{ box-sizing:border-box; margin:0; padding:0; }
-
-  html{ scroll-behavior:smooth; }
-
-  body{
-    background:
-      radial-gradient(ellipse 700px 500px at 20% -10%, rgba(139,92,246,0.16), transparent),
-      radial-gradient(ellipse 600px 500px at 90% 10%, rgba(236,72,153,0.10), transparent),
-      var(--bg);
-    color:var(--text);
-    font-family:var(--body);
-    line-height:1.5;
-    -webkit-font-smoothing:antialiased;
-    visibility:hidden;
-  }
+  body{ visibility:hidden; }
   body.ready{ visibility:visible; }
 
-  .bg-grid{
-    position:fixed; inset:0; z-index:-1;
+  /* ---------- Hero ---------- */
+  .hero{ padding:96px 0 88px; }
+  .hero-grid{ display:grid; grid-template-columns:1fr .78fr; gap:72px; align-items:center; }
+  .hero h1{ font-size:clamp(34px,5vw,58px); margin-bottom:26px; }
+  /* Der Kopf traegt zwei Stimmen: die Aufgabe schmal und leise, die
+     Zuspitzung breit und schwer. Eine Schrift, zwei Breiten. */
+  .h1-quiet{
+    display:block; font-stretch:100%; font-weight:500; color:var(--ink-2);
+    font-size:.62em; letter-spacing:0; margin-bottom:.18em;
+  }
+  .h1-loud{ display:block; font-stretch:125%; font-weight:800; letter-spacing:-.025em; }
+  .hero-sub{ font-size:17.5px; color:var(--ink-2); max-width:44ch; margin-bottom:34px; }
+  .hero-cta{ display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
+  .hero-note{ font-family:var(--mono); font-size:12.5px; color:var(--ink-3); }
+
+  /* ---------- Signatur: das Blatt, das gescannt wird ---------- */
+  .scan{ display:flex; flex-direction:column; align-items:center; gap:14px; }
+  .scan-sheet{
+    position:relative; width:100%; max-width:340px; aspect-ratio:210/297;
+    background:var(--sheet); border:1px solid var(--rule-sheet); border-radius:2px;
+    box-shadow:var(--sheet-shadow); overflow:hidden; cursor:pointer;
+  }
+  .scan-doc, .scan-raster{ position:absolute; inset:0; }
+  .scan-doc{ width:100%; height:100%; display:block; }
+  /* Der Rasterschleier bleibt liegen, wo der Scanner schon war: das Ergebnis
+     ist ein PNG, also darf man die Pixel sehen, wenn man hinschaut. */
+  .scan-raster{
+    pointer-events:none;
     background-image:
-      linear-gradient(rgba(139,92,246,0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(139,92,246,0.05) 1px, transparent 1px);
-    background-size: 64px 64px;
-    mask-image: radial-gradient(ellipse 900px 600px at 50% 0%, black 40%, transparent 75%);
+      repeating-linear-gradient(0deg,  rgba(21,24,28,.06) 0 1px, transparent 1px 5px),
+      repeating-linear-gradient(90deg, rgba(21,24,28,.06) 0 1px, transparent 1px 5px);
   }
 
-  a{ color:inherit; text-decoration:none; }
+  /* ---------- Faktenleiste ---------- */
+  .facts{
+    display:grid; grid-template-columns:repeat(3,1fr);
+    border-top:1px solid var(--rule); border-bottom:1px solid var(--rule);
+  }
+  .fact{ padding:32px 32px 34px; border-left:1px solid var(--rule); }
+  .fact:first-child{ border-left:0; padding-left:0; }
+  .fact:last-child{ padding-right:0; }
+  .fact .spec{ display:block; margin-bottom:10px; }
+  .fact p{ font-size:15px; color:var(--ink-2); }
 
-  .wrap{ max-width:1080px; margin:0 auto; padding:0 24px; }
+  /* ---------- Abschnittskopf ---------- */
+  .head{ max-width:56ch; margin-bottom:48px; }
+  .head .spec{ display:block; margin-bottom:16px; }
+  .head h2{ font-size:clamp(26px,3.2vw,38px); font-weight:700; margin-bottom:14px; }
+  .head p{ font-size:16.5px; color:var(--ink-2); }
 
-  /* ---- Nav ---- */
-  nav{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:24px 0;
-  }
-  .logo{
-    font-family:var(--display); font-weight:600; font-size:19px;
-    display:flex; align-items:center; gap:8px;
-  }
-  .logo-mark{
-    width:22px; height:22px;
-    display:inline-block;
-    object-fit:contain;
-  }
-  .nav-links{ display:flex; gap:32px; align-items:center; }
-  .nav-links a{ color:var(--text-dim); font-size:14px; transition:color .15s; }
-  .nav-links a:hover{ color:var(--text); }
-  .nav-actions{ display:flex; align-items:center; gap:10px; }
-  .nav-login{
-    padding:9px 16px; border-radius:8px; font-size:14px; font-weight:500;
-    border:1px solid var(--border); color:var(--text-dim);
-    transition:border-color .15s, color .15s;
-  }
-  .nav-login:hover{ border-color:var(--border-strong); color:var(--text); }
-  .nav-cta-primary{
-    padding:9px 18px; border-radius:8px; font-size:14px; font-weight:600;
-    background:var(--gradient); color:#fff;
-    box-shadow:0 0 0 1px rgba(255,255,255,0.06) inset, 0 6px 18px -8px rgba(139,92,246,0.55);
-    transition:transform .15s;
-  }
-  .nav-cta-primary:hover{ transform:translateY(-1px); }
+  .steps{ margin-bottom:36px; }
 
-  /* ---- Hero ---- */
-  .hero{
-    padding:88px 0 64px;
-    display:grid; grid-template-columns:1.1fr 0.9fr; gap:56px; align-items:center;
+  /* Anfrage und Antwort nebeneinander, wie ein Datenblatt.
+     Kein Terminal-Fenster, keine Ampelpunkte. */
+  .exchange{
+    display:grid; grid-template-columns:1fr 1fr;
+    background:var(--sheet); border:1px solid var(--rule-sheet); border-radius:2px;
+    box-shadow:var(--sheet-shadow); overflow:hidden; margin-bottom:2px;
   }
-  .eyebrow{
-    display:inline-flex; align-items:center; gap:8px;
-    font-family:var(--mono); font-size:12.5px; color:var(--purple);
-    background:rgba(139,92,246,0.1); border:1px solid var(--border);
-    padding:6px 12px; border-radius:100px; margin-bottom:22px;
-  }
-  .eyebrow::before{
-    content:''; width:6px; height:6px; border-radius:50%;
-    background:var(--pink);
-  }
-  h1{
-    font-family:var(--display); font-weight:700;
-    font-size:clamp(34px, 4.6vw, 54px);
-    line-height:1.08; letter-spacing:-0.02em;
-    margin-bottom:20px;
-  }
-  h1 .accent{
-    background:var(--gradient);
-    -webkit-background-clip:text; background-clip:text; color:transparent;
-  }
-  .hero p{
-    color:var(--text-dim); font-size:17px; max-width:480px; margin-bottom:32px;
-  }
-  .cta-row{ display:flex; gap:12px; flex-wrap:wrap; }
-  .btn-primary, .btn-secondary{
-    padding:13px 22px; border-radius:9px; font-size:14.5px; font-weight:600;
-    display:inline-flex; align-items:center; justify-content:center; gap:8px;
-    transition:transform .15s, box-shadow .15s, border-color .15s;
-  }
-  .btn-primary{
-    background:var(--gradient); color:#fff;
-    box-shadow:0 0 0 1px rgba(255,255,255,0.06) inset, 0 8px 24px -8px rgba(139,92,246,0.55);
-  }
-  .btn-primary:hover{ transform:translateY(-1px); }
-  .btn-secondary{
-    background:transparent; border:1px solid var(--border); color:var(--text);
-  }
-  .btn-secondary:hover{ border-color:var(--border-strong); }
-  .hero-note{ margin-top:14px; font-size:13px; color:var(--text-dimmer); }
+  .exchange-col{ padding:24px 26px 28px; min-width:0; }
+  .exchange-col + .exchange-col{ border-left:1px solid var(--rule-sheet); }
+  .exchange-col > .spec{ display:block; margin-bottom:18px; }
+  .exchange .codeblock{ border:0; padding:0; box-shadow:none; background:none; }
 
-  /* ---- Signature visual: PDF -> PNG morph ---- */
-  .morph-card{
-    background:var(--surface); border:1px solid var(--border);
-    border-radius:16px; padding:40px 24px;
-    display:flex; align-items:center; justify-content:center; gap:20px;
-    position:relative; overflow:hidden;
-    min-height:220px;
-  }
-  .morph-card::before{
-    content:''; position:absolute; inset:-40%;
-    background:radial-gradient(circle, rgba(139,92,246,0.16), transparent 60%);
-    animation:drift 7s ease-in-out infinite;
-  }
-  @keyframes drift{
-    0%,100%{ transform:translate(0,0); }
-    50%{ transform:translate(6%, -6%); }
-  }
-  .file-icon{ position:relative; z-index:1; text-align:center; }
-  .file-icon svg{ display:block; margin:0 auto 10px; }
-  .file-icon span{
-    font-family:var(--mono); font-size:12px; color:var(--text-dim);
-  }
-  .morph-arrow{ position:relative; z-index:1; }
-  .morph-arrow svg{ display:block; }
-  .dash-line{
-    stroke-dasharray:6 6;
-    animation:dash 1.4s linear infinite;
-  }
-  @keyframes dash{ to{ stroke-dashoffset:-24; } }
-
-  @media (prefers-reduced-motion: reduce){
-    .morph-card::before, .dash-line{ animation:none; }
-  }
-
-  /* ---- Feature strip ---- */
-  .features{
-    padding:48px 0 88px;
-    display:grid; grid-template-columns:repeat(3, 1fr); gap:1px;
-    background:var(--border); border:1px solid var(--border); border-radius:14px;
-    overflow:hidden;
-  }
-  .feature{
-    background:var(--bg-elevated); padding:28px 26px;
-  }
-  .feature h3{
-    font-family:var(--display); font-size:16px; font-weight:600; margin-bottom:8px;
-  }
-  .feature p{ color:var(--text-dim); font-size:14px; }
-
-  /* ---- Section heading ---- */
-  .section-head{ text-align:center; max-width:520px; margin:0 auto 44px; }
-  .section-head .eyebrow{ margin:0 auto 16px; width:fit-content; }
-  .section-head h2{
-    font-family:var(--display); font-size:clamp(26px,3vw,34px);
-    font-weight:600; letter-spacing:-0.01em; margin-bottom:12px;
-  }
-  .section-head p{ color:var(--text-dim); font-size:15px; }
-
-  /* ---- Pricing ---- */
-  .pricing{ padding:20px 0 96px; }
-  .price-grid{
-    display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px; max-width:940px; margin:0 auto;
-    align-items:stretch;
-  }
-  .price-card{
-    position:relative;
-    background:var(--surface); border:1px solid var(--border);
-    border-radius:16px; padding:32px 28px;
+  /* ---------- Preise ---------- */
+  .plans{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; align-items:stretch; }
+  .plan{
     display:flex; flex-direction:column;
-    height:100%;
+    background:var(--sheet); border:1px solid var(--rule-sheet); border-radius:3px;
+    box-shadow:var(--sheet-shadow); padding:32px 30px 30px;
   }
-  .price-card.pro{ border-color:var(--border-strong); }
-  .price-card.pro::before{
-    content:'Most popular'; position:absolute; top:-11px; right:24px;
-    font-family:var(--mono); font-size:11px; color:#fff;
-    background:var(--gradient); padding:4px 10px; border-radius:100px; white-space:nowrap;
+  /* Der Pro-Tarif wird nicht mit einem Aufkleber markiert, sondern indem er
+     als einziger gedruckt ist statt bedruckt zu werden. */
+  .plan-pro{ background:var(--ink); border-color:var(--ink); color:#fff; }
+  .plan h3{ font-size:17px; font-weight:700; }
+  .plan-price{
+    font-stretch:125%; font-weight:800; font-size:40px; letter-spacing:-.03em;
+    line-height:1; margin:20px 0 8px;
   }
-  .price-card h3{ font-family:var(--display); font-size:18px; font-weight:600; margin-bottom:6px; }
-  .price-amount{ font-family:var(--display); font-size:38px; font-weight:700; margin:14px 0 4px; }
-  .price-amount span{ font-size:14px; font-weight:500; color:var(--text-dim); }
-  .price-sub{ color:var(--text-dim); font-size:13.5px; margin-bottom:22px; }
-  .price-list{ list-style:none; margin-bottom:26px; flex-grow:1; }
-  .price-list li{
-    display:flex; align-items:flex-start; gap:10px;
-    font-size:14px; color:var(--text-dim); padding:7px 0;
+  .plan-price small{ font-stretch:100%; font-size:14px; font-weight:500; color:var(--ink-2); letter-spacing:0; }
+  .plan-pro .plan-price small{ color:#a9b0b7; }
+  .plan-sub{ font-family:var(--mono); font-size:12px; color:var(--ink-3); margin-bottom:26px; }
+  .plan-pro .plan-sub{ color:#8d949b; }
+  .plan-list{ display:grid; gap:11px; margin-bottom:30px; flex:1 1 auto; }
+  .plan-list li{
+    display:grid; grid-template-columns:14px 1fr; gap:11px; align-items:start;
+    font-size:14.5px; color:var(--ink-2);
   }
-  .price-list li::before{
-    content:''; width:6px; height:6px; margin-top:7px; border-radius:50%;
-    background:var(--purple); flex-shrink:0;
-  }
-  .price-card .btn-primary, .price-card .btn-secondary{ width:100%; margin-top:auto; }
-  .price-footnote{ font-size:12px; color:var(--text-dimmer); margin-top:12px; text-align:center; }
+  .plan-pro .plan-list li{ color:#c3c9ce; }
+  .plan-list li::before{ content:''; width:7px; height:7px; margin-top:8px; background:var(--cyan); }
+  .plan-foot{ margin-top:22px; font-size:13px; color:var(--ink-3); max-width:70ch; }
 
-  /* ---- Code example ---- */
-  .code-section{ padding:20px 0 96px; }
-  .code-card{
-    background:var(--bg-elevated); border:1px solid var(--border);
-    border-radius:14px; overflow:hidden; max-width:640px; margin:0 auto;
+  @media (max-width:900px){
+    .hero-grid{ grid-template-columns:1fr; gap:52px; }
+    .facts{ grid-template-columns:1fr; }
+    .fact{ border-left:0; border-top:1px solid var(--rule); padding:26px 0; }
+    .fact:first-child{ border-top:0; }
+    .plans{ grid-template-columns:1fr; }
+    .exchange{ grid-template-columns:1fr; }
+    .exchange-col + .exchange-col{ border-left:0; border-top:1px solid var(--rule-sheet); }
   }
-  .code-head{
-    display:flex; align-items:center; gap:8px; padding:12px 18px;
-    border-bottom:1px solid var(--border);
-  }
-  .dot{ width:9px; height:9px; border-radius:50%; background:var(--text-dimmer); opacity:.5; }
-  .code-head span{ font-family:var(--mono); font-size:12px; color:var(--text-dim); margin-left:6px; }
-  pre{
-    font-family:var(--mono); font-size:13px; line-height:1.7;
-    padding:22px 20px; overflow-x:auto; color:var(--text-dim);
-  }
-  pre .k{ color:var(--purple); }
-  pre .s{ color:var(--pink); }
-  pre .c{ color:var(--text-dimmer); }
-
-  .steps-list{
-    list-style:none; counter-reset:step; max-width:640px; margin:0 auto 28px;
-  }
-  .steps-list li{
-    counter-increment:step; display:flex; gap:14px; align-items:flex-start;
-    font-size:14.5px; color:var(--text-dim); padding:8px 0;
-  }
-  .steps-list li::before{
-    content:counter(step); flex-shrink:0;
-    width:22px; height:22px; border-radius:50%;
-    background:rgba(139,92,246,0.12); border:1px solid var(--border);
-    color:var(--purple); font-family:var(--mono); font-size:12px; font-weight:500;
-    display:flex; align-items:center; justify-content:center;
-  }
-  .steps-list code{
-    font-family:var(--mono); font-size:12.5px; color:var(--text);
-    background:var(--bg-elevated); padding:2px 6px; border-radius:4px;
-  }
-  .steps-list strong{ color:var(--text); font-weight:600; }
-
-  .api-notes{
-    max-width:640px; margin:20px auto 0;
-    display:grid; gap:1px; background:var(--border);
-    border:1px solid var(--border); border-radius:12px; overflow:hidden;
-  }
-  .api-notes .note{
-    background:var(--bg-elevated); padding:14px 18px;
-    font-size:13.5px; color:var(--text-dim); line-height:1.55;
-  }
-  .api-notes .note-k{
-    display:inline-block; min-width:78px;
-    font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase;
-    color:var(--purple); vertical-align:baseline;
-  }
-  .api-notes code{
-    font-family:var(--mono); font-size:12px; color:var(--text);
-    background:var(--surface); padding:2px 6px; border-radius:4px;
-  }
-
-  /* ---- Footer ---- */
-  footer{
-    border-top:1px solid var(--border); padding:32px 0; margin-top:40px;
-    display:flex; justify-content:space-between; align-items:center;
-    color:var(--text-dimmer); font-size:13px;
-  }
-
-  @media (max-width:760px){
-    .hero{ grid-template-columns:1fr; padding-top:56px; }
-    .hero p{ max-width:none; }
-    .features{ grid-template-columns:1fr; }
-    .price-grid{ grid-template-columns:1fr; }
-    .nav-links{ display:none; }
-    footer{ flex-direction:column; gap:14px; text-align:center; }
-    footer > div:last-child{ justify-content:center; flex-wrap:wrap; row-gap:8px; }
+  @media (max-width:680px){
+    .hero{ padding:64px 0 60px; }
+    .nav{ display:none; }
   }
 </style>
+<noscript><style>body{ visibility:visible; }</style></noscript>
 </head>
 <body>
-<div class="bg-grid"></div>
 
-<div class="wrap">
-  <nav>
-    <a href="index.html" class="logo"><img src="logo.png" alt="" class="logo-mark">PixelPDF</a>
-    <div class="nav-links">
-      <a href="#features">Features</a>
+<header class="site-head">
+  <div class="wrap">
+    <a href="index.html" class="brand">
+      <svg class="brand-mark" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M4.6 2.6h8.8l6 6v12.8h-14.8z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        <path d="M13.4 2.6v6h6" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        <rect x="7.6" y="12.4" width="3.2" height="3.2" fill="#00a3e0"/>
+        <rect x="11.2" y="12.4" width="3.2" height="3.2" fill="#00a3e0" opacity=".45"/>
+        <rect x="7.6" y="16" width="3.2" height="3.2" fill="#00a3e0" opacity=".45"/>
+        <rect x="11.2" y="16" width="3.2" height="3.2" fill="#00a3e0"/>
+      </svg>
+      <span>PixelPDF</span>
+    </a>
+
+    <nav class="nav">
+      <a href="#docs">How it works</a>
       <a href="#pricing">Pricing</a>
-      <a href="#docs">Docs</a>
+    </nav>
+
+    <div class="head-actions">
+      <a href="login.html" class="btn btn-quiet btn-small">Log in</a>
+      <a href="login.html" class="btn btn-solid btn-small">Get an API key</a>
     </div>
-    <div class="nav-actions">
-      <a href="login.html" class="nav-login">Log in</a>
-      <a href="login.html" class="nav-cta-primary">Get API key</a>
-    </div>
-  </nav>
+  </div>
+</header>
+
+<main>
 
   <section class="hero">
-    <div>
-      <div class="eyebrow">For Make &amp; Zapier</div>
-      <h1>PDF to PNG.<br>In <span class="accent">one request.</span></h1>
-      <p>A focused, reliable PDF-to-PNG API for no-code automations. Send a file, get an image back in the same response — no queues, no webhooks, no surprises.</p>
-      <div class="cta-row">
-        <a href="login.html" class="btn-primary">Get 200 free credits</a>
-        <a href="#docs" class="btn-secondary">Read the docs</a>
+    <div class="wrap hero-grid">
+      <div>
+        <h1>
+          <span class="h1-quiet">Turn a PDF into an image.</span>
+          <span class="h1-loud">In one request.</span>
+        </h1>
+        <p class="hero-sub">
+          Send the file, get the PNG straight back. Setting it up in Make or Zapier takes
+          about a minute, and there is nothing to configure.
+        </p>
+        <div class="hero-cta">
+          <a href="login.html" class="btn btn-solid">Get an API key</a>
+          <a href="#docs" class="btn btn-line">See how it works</a>
+        </div>
+        <p class="hero-note">200 free conversions · no card</p>
       </div>
-      <div class="hero-note">No credit card required · Up to 5 pages per file</div>
+
+      <figure class="scan">
+        <div class="scan-sheet" id="scan-sheet" title="Run it again">
+          <svg class="scan-doc scan-target" viewBox="0 0 420 594" fill="none" aria-hidden="true">
+            <rect width="420" height="594" fill="#ffffff"/>
+            <!-- Kopf -->
+            <rect x="46" y="56"  width="212" height="15" fill="#22262b"/>
+            <rect x="46" y="80"  width="150" height="15" fill="#22262b"/>
+            <rect x="46" y="112" width="88"  height="7"  fill="#b6bbc1"/>
+            <!-- Fliesstext -->
+            <rect x="46" y="146" width="328" height="6" fill="#ccd0d5"/>
+            <rect x="46" y="162" width="328" height="6" fill="#ccd0d5"/>
+            <rect x="46" y="178" width="296" height="6" fill="#ccd0d5"/>
+            <rect x="46" y="194" width="318" height="6" fill="#ccd0d5"/>
+            <rect x="46" y="210" width="176" height="6" fill="#ccd0d5"/>
+            <!-- Abbildung -->
+            <rect x="46" y="246" width="328" height="150" fill="#eef1f3"/>
+            <rect x="70"  y="330" width="34" height="42"  fill="#00a3e0" opacity=".38"/>
+            <rect x="114" y="308" width="34" height="64"  fill="#00a3e0" opacity=".55"/>
+            <rect x="158" y="286" width="34" height="86"  fill="#00a3e0" opacity=".72"/>
+            <rect x="202" y="300" width="34" height="72"  fill="#00a3e0"/>
+            <rect x="246" y="268" width="34" height="104" fill="#00a3e0"/>
+            <rect x="290" y="318" width="34" height="54"  fill="#00a3e0" opacity=".55"/>
+            <rect x="70" y="266" width="62" height="6" fill="#a8b0b6"/>
+            <!-- Fliesstext, zweiter Block -->
+            <rect x="46" y="424" width="328" height="6" fill="#ccd0d5"/>
+            <rect x="46" y="440" width="308" height="6" fill="#ccd0d5"/>
+            <rect x="46" y="456" width="328" height="6" fill="#ccd0d5"/>
+            <rect x="46" y="472" width="238" height="6" fill="#ccd0d5"/>
+            <!-- Fuss -->
+            <rect x="46" y="522" width="328" height="1" fill="#dfe3e6"/>
+            <rect x="46" y="534" width="54" height="6" fill="#d3d7db"/>
+            <rect x="356" y="534" width="18" height="6" fill="#d3d7db"/>
+          </svg>
+          <div class="scan-raster scan-target"></div>
+          <div class="scanline"></div>
+        </div>
+        <figcaption class="spec">PNG · 200 DPI · A4 ≈ 1654 × 2339 px</figcaption>
+      </figure>
     </div>
+  </section>
 
-    <div class="morph-card">
-      <div class="file-icon">
-        <svg width="52" height="64" viewBox="0 0 52 64" fill="none">
-          <path d="M4 2H34L48 16V60C48 61.1 47.1 62 46 62H6C4.9 62 4 61.1 4 60V4C4 2.9 4.9 2 4 2Z" fill="#1b1b28" stroke="#8b5cf6" stroke-width="1.6"/>
-          <path d="M34 2V16H48" fill="none" stroke="#8b5cf6" stroke-width="1.6"/>
-          <text x="26" y="42" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#ec4899" font-weight="500">PDF</text>
-        </svg>
-        <span>document.pdf</span>
+  <div class="wrap">
+    <div class="facts">
+      <div class="fact">
+        <span class="spec">One request</span>
+        <p>Send the PDF, get the image straight back. Nothing to set up first and nothing to wait for afterwards.</p>
+      </div>
+      <div class="fact">
+        <span class="spec">Ready in a minute</span>
+        <p>One address and one header in your scenario, and it runs. That is the entire setup, on every plan.</p>
+      </div>
+      <div class="fact">
+        <span class="spec">Says what went wrong</span>
+        <p>Out of credits, file too big, wrong key: every failure comes back in plain words instead of a blank response.</p>
+      </div>
+    </div>
+  </div>
+
+  <section class="section" id="docs">
+    <div class="wrap">
+      <div class="head">
+        <span class="spec">How it works</span>
+        <h2>One endpoint is the whole API</h2>
+        <p>Four steps from signing up to a PNG in your scenario. There is nothing else to learn.</p>
       </div>
 
-      <div class="morph-arrow">
-        <svg width="56" height="24" viewBox="0 0 56 24" fill="none">
-          <line class="dash-line" x1="2" y1="12" x2="44" y2="12" stroke="#8b5cf6" stroke-width="2"/>
-          <path d="M40 6L48 12L40 18" stroke="#ec4899" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+      <ol class="steps">
+        <li class="step"><span>Create a free account and copy your API key from the <a href="login.html">dashboard</a>.</span></li>
+        <li class="step"><span>In Make or Zapier, add an <strong>HTTP → Make a request</strong> module set to <code>POST</code>.</span></li>
+        <li class="step"><span>Point it at <code>https://api.pixelpdf.dev/convert</code> and add the header <code>X-API-Key</code> with your key.</span></li>
+        <li class="step"><span>Attach your PDF as a <code>file</code> field using <code>multipart/form-data</code>, then run the scenario.</span></li>
+      </ol>
+
+      <div class="exchange">
+        <div class="exchange-col">
+          <span class="spec">Request</span>
+<pre class="codeblock"><span class="m">POST</span> https://api.pixelpdf.dev/convert
+
+X-API-Key:    <span class="v">your_api_key</span>
+Content-Type: multipart/form-data
+
+file:         <span class="v">invoice.pdf</span></pre>
+        </div>
+        <div class="exchange-col">
+          <span class="spec">Response</span>
+<pre class="codeblock"><span class="m">200</span> image/png        <span class="c">1 page</span>
+<span class="m">200</span> application/zip  <span class="c">2–5 pages</span>
+
+<span class="m">401</span> <span class="c">key missing or invalid</span>
+<span class="m">402</span> <span class="c">free credits used up</span>
+<span class="m">413</span> <span class="c">over the page or size limit</span>
+<span class="m">429</span> <span class="c">fair-use limit reached</span></pre>
+        </div>
       </div>
 
-      <div class="file-icon">
-        <svg width="52" height="64" viewBox="0 0 52 64" fill="none">
-          <rect x="4" y="4" width="44" height="56" rx="4" fill="#1b1b28" stroke="#ec4899" stroke-width="1.6"/>
-          <circle cx="17" cy="22" r="4.5" fill="#8b5cf6"/>
-          <path d="M8 46L20 34L28 42L34 34L44 46" stroke="#8b5cf6" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <span>document.png</span>
+      <div class="notes">
+        <div class="note"><span class="spec">Output</span><span>A single-page PDF returns one <code>image/png</code>. A multi-page PDF returns a <code>.zip</code> holding one PNG per page, in page order.</span></div>
+        <div class="note"><span class="spec">Resolution</span><span>Every page renders at 200&nbsp;DPI, so an A4 page arrives at roughly <code>1654 × 2339</code> pixels. There is no setting to get wrong.</span></div>
       </div>
     </div>
   </section>
 
-  <section class="features" id="features">
-    <div class="feature">
-      <h3>Built for small files</h3>
-      <p>Each conversion completes in well under a second — comfortably inside the request timeouts Make and Zapier impose.</p>
-    </div>
-    <div class="feature">
-      <h3>Synchronous by design</h3>
-      <p>Send a PDF, get the image back in the same HTTP response. No webhooks to register, no status to poll.</p>
-    </div>
-    <div class="feature">
-      <h3>Predictable limits</h3>
-      <p>Every plan states its limit up front. Requests never fail silently — errors are explicit and easy to read.</p>
+  <section class="section section-tight" id="pricing">
+    <div class="wrap">
+      <div class="head">
+        <span class="spec">Pricing</span>
+        <h2>Simple to start, simple to keep</h2>
+        <p>No subscription to try it. Upgrade only when you actually need to.</p>
+      </div>
+
+      <div class="plans">
+        <div class="plan">
+          <h3>Free</h3>
+          <div class="plan-price">€0</div>
+          <div class="plan-sub">200 credits, one-time</div>
+          <ul class="plan-list">
+            <li><span>200 PDF-to-PNG conversions</span></li>
+            <li><span>Up to 5 pages / 10 MB per file</span></li>
+            <li><span>Credits never expire</span></li>
+            <li><span>No credit card required</span></li>
+          </ul>
+          <a href="login.html" class="btn btn-line btn-block">Start for free</a>
+        </div>
+
+        <div class="plan plan-pro">
+          <h3>Pro</h3>
+          <div class="plan-price">€5 <small>/ month</small></div>
+          <div class="plan-sub">Unlimited conversions*</div>
+          <ul class="plan-list">
+            <li><span>Unlimited PDF-to-PNG conversions*</span></li>
+            <li><span>Up to 5 pages / 10 MB per file</span></li>
+            <li><span>Priority email support</span></li>
+            <li><span>Cancel anytime</span></li>
+          </ul>
+          <a href="login.html" class="btn btn-invert btn-block">Go Pro</a>
+        </div>
+
+        <div class="plan">
+          <h3>Enterprise</h3>
+          <div class="plan-price">Custom</div>
+          <div class="plan-sub">For teams with heavier workloads</div>
+          <ul class="plan-list">
+            <li><span>Higher rate limits</span></li>
+            <li><span>Custom file size / page limits</span></li>
+            <li><span>Dedicated support</span></li>
+            <li><span>Tailored onboarding</span></li>
+          </ul>
+          <a href="mailto:support@pixelpdf.dev?subject=PixelPDF%20Enterprise" class="btn btn-line btn-block" id="enterprise-contact-btn">Contact us</a>
+        </div>
+      </div>
+
+      <p class="plan-foot">*A fair-use limit of 2,000 conversions per month keeps the service stable for everyone. Need more? Just reach out.</p>
     </div>
   </section>
 
-  <section class="pricing" id="pricing">
-    <div class="section-head">
-      <div class="eyebrow">Pricing</div>
-      <h2>Simple to start, simple to keep</h2>
-      <p>No subscription needed to try it. Upgrade only when you actually need to.</p>
-    </div>
+</main>
 
-    <div class="price-grid">
-      <div class="price-card">
-        <h3>Free</h3>
-        <div class="price-amount">€0</div>
-        <div class="price-sub">200 credits, one-time</div>
-        <ul class="price-list">
-          <li>200 PDF-to-PNG conversions</li>
-          <li>Up to 5 pages / 10 MB per file</li>
-          <li>Credits never expire</li>
-          <li>No credit card required</li>
-        </ul>
-        <a href="login.html" class="btn-secondary">Start for free</a>
-      </div>
-
-      <div class="price-card pro">
-        <h3>Pro</h3>
-        <div class="price-amount">€5 <span>/ month</span></div>
-        <div class="price-sub">Unlimited conversions*</div>
-        <ul class="price-list">
-          <li>Unlimited PDF-to-PNG conversions*</li>
-          <li>Up to 5 pages / 10 MB per file</li>
-          <li>Priority email support</li>
-          <li>Cancel anytime</li>
-        </ul>
-        <a href="login.html" class="btn-primary">Go Pro</a>
-      </div>
-
-      <div class="price-card">
-        <h3>Enterprise</h3>
-        <div class="price-amount">Custom</div>
-        <div class="price-sub">For teams with heavier workloads</div>
-        <ul class="price-list">
-          <li>Higher rate limits</li>
-          <li>Custom file size / page limits</li>
-          <li>Dedicated support</li>
-          <li>Tailored onboarding</li>
-        </ul>
-        <a href="mailto:support@pixelpdf.dev?subject=PixelPDF%20Enterprise" class="btn-secondary" id="enterprise-contact-btn">Contact us</a>
-      </div>
-    </div>
-    <div class="price-footnote">*A fair-use limit of 2,000 conversions/month keeps the service stable for everyone. Need more? Just reach out.</div>
-  </section>
-
-  <section class="code-section" id="docs">
-    <div class="section-head">
-      <div class="eyebrow">Documentation</div>
-      <h2>One endpoint is the whole API</h2>
-      <p>Send a PDF over HTTP and receive the image in the same response. No SDK to install, nothing to configure.</p>
-    </div>
-    <ol class="steps-list">
-      <li><span>Create a free account and copy your API key from the <a href="login.html" style="color:var(--purple);">dashboard</a>.</span></li>
-      <li><span>In Make or Zapier, add an <strong>HTTP → Make a request</strong> module set to <code>POST</code>.</span></li>
-      <li><span>Point it at <code>https://api.pixelpdf.dev/convert</code> and add the header <code>X-API-Key</code> with your key.</span></li>
-      <li><span>Attach your PDF as a <code>file</code> field using <code>multipart/form-data</code>, then run the scenario.</span></li>
-    </ol>
-    <div class="code-card">
-      <div class="code-head">
-        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-        <span>POST /convert</span>
-      </div>
-      <pre><span class="k">POST</span> https://api.pixelpdf.dev/convert
-
-<span class="c"># Header</span>
-X-API-Key: <span class="s">your_api_key</span>
-
-<span class="c"># Body — multipart/form-data</span>
-file: <span class="s">your_file.pdf</span>
-
-<span class="c"># Response</span>
-<span class="k">200 OK</span>  →  image/png   <span class="c"># single-page PDF</span>
-<span class="k">200 OK</span>  →  application/zip <span class="c"># multi-page PDF</span></pre>
-    </div>
-    <div class="api-notes">
-      <div class="note"><span class="note-k">Response</span> A single-page PDF returns one <code>image/png</code>. A multi-page PDF returns a <code>.zip</code> containing one PNG per page.</div>
-      <div class="note"><span class="note-k">Limits</span> Up to 5 pages and 10&nbsp;MB per file. Oversized files return <code>413</code>.</div>
-      <div class="note"><span class="note-k">Errors</span> <code>401</code> invalid key · <code>402</code> out of credits · <code>429</code> fair-use limit reached.</div>
-    </div>
-  </section>
-
-  <footer>
+<footer class="site-foot">
+  <div class="wrap">
     <div>© 2026 PixelPDF</div>
-    <div style="display:flex; gap:16px; align-items:center;">
-      <a href="impressum.html" style="color:var(--text-dimmer);">Imprint</a>
-      <a href="datenschutz.html" style="color:var(--text-dimmer);">Privacy Policy</a>
-      <a href="agb.html" style="color:var(--text-dimmer);">Terms</a>
-      <span>Built for automators.</span>
+    <div class="foot-links">
+      <a href="impressum.html">Imprint</a>
+      <a href="datenschutz.html">Privacy Policy</a>
+      <a href="agb.html">Terms</a>
+      <a href="mailto:support@pixelpdf.dev">support@pixelpdf.dev</a>
     </div>
-  </footer>
-</div>
+  </div>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-client.js"></script>
 <script>
-  // Already logged in? Skip the marketing page and go straight to the dashboard.
-  sb.auth.getSession().then(({ data }) => {
-    if (data.session) {
-      window.location.href = "dashboard.html";
-    } else {
-      document.body.classList.add("ready");
-    }
-  });
+  const scanSheet = document.getElementById("scan-sheet");
 
-  // mailto: links don't always trigger a mail app (depends on the visitor's OS/browser
-  // setup), so also copy the address as a reliable fallback.
+  // Die Seite startet auf visibility:hidden, damit eingeloggte Besucher die
+  // Marketingseite nicht kurz aufblitzen sehen, bevor sie ins Dashboard fliegen.
+  // Der Timer ist die Reissleine: faellt das Supabase-CDN aus oder wird es
+  // geblockt, wuerde die Seite sonst dauerhaft unsichtbar bleiben.
+  let revealed = false;
+  function reveal(){
+    if (revealed) return;
+    revealed = true;
+    // Erst den Scan scharf stellen, dann die Seite zeigen. Andersherum
+    // liefe die Animation ein Bild lang, bevor sie zu sehen waere.
+    if (scanSheet) scanSheet.classList.add("is-scanned");
+    document.body.classList.add("ready");
+  }
+  setTimeout(reveal, 1200);
+
+  try {
+    sb.auth.getSession().then(({ data }) => {
+      if (data.session) {
+        window.location.href = "dashboard.html";
+      } else {
+        reveal();
+      }
+    }).catch(reveal);
+  } catch (e) {
+    reveal();
+  }
+
+  // Klick auf das Blatt spielt den Scan neu ab. Die Klasse muss dafuer weg,
+  // ein Reflow erzwungen und sie dann neu gesetzt werden.
+  if (scanSheet) {
+    scanSheet.addEventListener("click", () => {
+      scanSheet.classList.remove("is-scanned");
+      void scanSheet.offsetWidth;
+      scanSheet.classList.add("is-scanned");
+    });
+  }
+
+  // mailto: oeffnet nicht auf jedem System ein Mailprogramm, deshalb landet die
+  // Adresse zusaetzlich in der Zwischenablage.
   const enterpriseBtn = document.getElementById("enterprise-contact-btn");
   if (enterpriseBtn) {
     enterpriseBtn.addEventListener("click", () => {
       navigator.clipboard.writeText("support@pixelpdf.dev").catch(() => {});
       const original = enterpriseBtn.textContent;
-      enterpriseBtn.textContent = "Email copied!";
+      enterpriseBtn.textContent = "Email copied";
       setTimeout(() => { enterpriseBtn.textContent = original; }, 2000);
     });
   }

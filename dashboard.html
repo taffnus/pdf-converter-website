@@ -4,258 +4,146 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard — PixelPDF</title>
-<link rel="icon" type="image/png" href="logo.png">
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<link rel="icon" href="logo.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
 <style>
-  :root{
-    --bg:#0a0a0f;
-    --bg-elevated:#111119;
-    --surface:#15151f;
-    --surface-hover:#1b1b28;
-    --border:rgba(139,92,246,0.18);
-    --border-strong:rgba(139,92,246,0.4);
-    --text:#f3f2f8;
-    --text-dim:#9997ab;
-    --text-dimmer:#67657a;
-    --purple:#8b5cf6;
-    --pink:#ec4899;
-    --red:#f87171;
-    --green:#4ade80;
-    --gradient: linear-gradient(135deg, var(--purple), var(--pink));
-    --mono: 'JetBrains Mono', monospace;
-    --display: 'Space Grotesk', sans-serif;
-    --body: 'Inter', sans-serif;
-  }
+  .wrap{ max-width:900px; }
 
-  *{ box-sizing:border-box; margin:0; padding:0; }
+  main{ padding:44px 0 96px; }
+  h1{ font-size:clamp(28px,3.6vw,38px); font-weight:800; margin-bottom:8px; }
+  .page-sub{ color:var(--ink-2); font-size:16px; margin-bottom:40px; }
 
-  body{
-    background:
-      radial-gradient(ellipse 700px 500px at 20% -10%, rgba(139,92,246,0.16), transparent),
-      radial-gradient(ellipse 600px 500px at 90% 10%, rgba(236,72,153,0.10), transparent),
-      var(--bg);
-    color:var(--text);
-    font-family:var(--body);
-    line-height:1.5;
-    -webkit-font-smoothing:antialiased;
-    min-height:100vh;
-  }
+  .user-email{ font-family:var(--mono); font-size:12.5px; color:var(--ink-3); }
 
-  .bg-grid{
-    position:fixed; inset:0; z-index:-1;
-    background-image:
-      linear-gradient(rgba(139,92,246,0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(139,92,246,0.05) 1px, transparent 1px);
-    background-size: 64px 64px;
-    mask-image: radial-gradient(ellipse 900px 600px at 50% 0%, black 40%, transparent 75%);
-  }
-
-  a{ color:inherit; text-decoration:none; }
-
-  .wrap{ max-width:880px; margin:0 auto; padding:0 24px; }
-
-  nav{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:24px 0;
-  }
-  .logo{
-    font-family:var(--display); font-weight:600; font-size:19px;
-    display:flex; align-items:center; gap:8px;
-  }
-  .logo-mark{
-    width:22px; height:22px;
-    display:inline-block;
-    object-fit:contain;
-  }
-  .nav-right{ display:flex; align-items:center; gap:16px; }
-  .user-email{ font-size:13.5px; color:var(--text-dim); }
-  .btn-secondary{
-    background:transparent; border:1px solid var(--border); color:var(--text);
-    padding:9px 16px; border-radius:8px; font-size:13.5px; font-weight:500;
-    cursor:pointer; font-family:var(--body);
-    transition:border-color .15s, background .15s;
-  }
-  .btn-secondary:hover{ border-color:var(--border-strong); background:var(--surface-hover); }
-
-  main{ padding:32px 0 80px; }
-
-  h1{
-    font-family:var(--display); font-weight:700; font-size:clamp(26px, 3.4vw, 34px);
-    letter-spacing:-0.01em; margin-bottom:6px;
-  }
-  .page-sub{ color:var(--text-dim); font-size:15px; margin-bottom:36px; }
-
-  .grid{
-    display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:20px;
-  }
-
+  /* ---------- Karten ---------- */
   .card{
-    background:var(--surface); border:1px solid var(--border);
-    border-radius:16px; padding:26px 26px;
+    background:var(--sheet); border:1px solid var(--rule-sheet);
+    border-radius:3px; box-shadow:var(--sheet-shadow);
+    padding:26px 28px 28px; margin-bottom:20px;
   }
-  .card h3{
-    font-family:var(--display); font-size:14px; font-weight:600;
-    color:var(--text-dim); text-transform:uppercase; letter-spacing:.04em;
-    margin-bottom:14px;
-  }
+  .card > .spec{ display:block; margin-bottom:16px; }
 
-  .plan-badge{
-    display:inline-flex; align-items:center; gap:8px;
-    font-family:var(--mono); font-size:13px;
-    background:rgba(139,92,246,0.1); border:1px solid var(--border);
-    padding:6px 12px; border-radius:100px; color:var(--purple);
-  }
-  .plan-badge.pro{ color:var(--pink); border-color:rgba(236,72,153,0.3); background:rgba(236,72,153,0.1); }
+  .row-2{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .row-2 .card{ margin-bottom:0; }
 
-  .stat-value{
-    font-family:var(--display); font-size:38px; font-weight:700; margin:10px 0 4px;
-  }
-  .stat-label{ color:var(--text-dim); font-size:13.5px; }
-
-  .progress-track{
-    background:var(--bg-elevated); border:1px solid var(--border);
-    border-radius:100px; height:8px; overflow:hidden; margin-top:12px;
-  }
-  .progress-fill{
-    height:100%; background:var(--gradient); border-radius:100px;
-    transition:width .3s;
-  }
-
-  .api-key-row{
+  /* ---------- Der API-Key ist der Grund, warum man hier ist:
+       deshalb steht er oben und bekommt den meisten Platz. ---------- */
+  .key-strip{
     display:flex; align-items:center; gap:10px; flex-wrap:wrap;
-    background:var(--bg-elevated); border:1px solid var(--border);
-    border-radius:9px; padding:12px 14px; margin-top:4px;
+    background:#fafbfa; border:1px solid var(--rule);
+    border-radius:2px; padding:14px 16px;
   }
-  .api-key-row code{
-    font-family:var(--mono); font-size:13.5px; color:var(--text);
-    flex:1; min-width:200px; overflow-x:auto; white-space:nowrap;
+  .key-value{
+    flex:1 1 240px; min-width:0;
+    font-family:var(--mono); font-size:15px; letter-spacing:.02em; color:var(--ink);
+    overflow-x:auto; white-space:nowrap; background:none; padding:0;
   }
-  .copy-btn{
-    background:var(--surface); border:1px solid var(--border); color:var(--text-dim);
-    padding:7px 12px; border-radius:7px; font-size:12.5px; font-weight:500;
-    cursor:pointer; font-family:var(--body); flex-shrink:0;
-    transition:border-color .15s, color .15s;
+  .key-actions{ display:flex; gap:8px; flex-wrap:wrap; }
+  .key-btn{
+    background:#fff; border:1px solid var(--rule); color:var(--ink-2);
+    padding:8px 14px; border-radius:2px; cursor:pointer;
+    font-family:var(--display); font-stretch:112%; font-weight:600; font-size:13px;
+    transition:border-color .15s ease, color .15s ease;
   }
-  .copy-btn:hover{ border-color:var(--border-strong); color:var(--text); }
-  .copy-btn.danger:hover{ border-color:rgba(248,113,113,0.45); color:var(--red); }
-  .copy-btn:disabled{ opacity:.6; cursor:default; }
-  .key-hint{ font-size:12.5px; color:var(--text-dimmer); margin-top:10px; }
+  .key-btn:hover{ border-color:var(--ink); color:var(--ink); }
+  .key-btn.danger:hover{ border-color:var(--alert); color:var(--alert); }
+  .key-btn:disabled{ opacity:.55; cursor:default; }
+  .key-hint{ font-size:13px; color:var(--ink-3); margin-top:14px; }
+  .key-hint strong{ color:var(--ink-2); font-weight:600; }
 
-  .upgrade-card{
-    background:var(--surface); border:1px solid var(--border-strong);
-    border-radius:16px; padding:28px 26px;
-    display:flex; align-items:center; justify-content:space-between; gap:20px;
-    flex-wrap:wrap;
+  /* ---------- Zahlen ---------- */
+  .stat{
+    font-stretch:125%; font-weight:800; font-size:44px; letter-spacing:-.03em;
+    line-height:1; margin-bottom:6px;
   }
-  .upgrade-card div h3{
-    font-family:var(--display); font-size:17px; font-weight:600; margin-bottom:6px;
-    text-transform:none; letter-spacing:normal; color:var(--text);
+  .stat small{
+    font-stretch:100%; font-size:16px; font-weight:500;
+    color:var(--ink-3); letter-spacing:0;
   }
-  .upgrade-card p{ color:var(--text-dim); font-size:14px; max-width:420px; }
-  .btn-primary{
-    padding:12px 22px; border-radius:9px; font-size:14.5px; font-weight:600;
-    background:var(--gradient); color:#fff; border:none; cursor:pointer;
-    box-shadow:0 0 0 1px rgba(255,255,255,0.06) inset, 0 8px 24px -8px rgba(139,92,246,0.55);
-    transition:transform .15s;
-    flex-shrink:0;
-    font-family:var(--body);
-  }
-  .btn-primary:hover{ transform:translateY(-1px); }
+  .stat-label{ color:var(--ink-2); font-size:14px; }
 
-  .loading, .error-state{
-    text-align:center; padding:80px 24px; color:var(--text-dim);
-  }
-  .error-state{ color:var(--red); }
+  .track{ height:6px; background:var(--bed-deep); border-radius:1px; overflow:hidden; margin-top:16px; }
+  .fill{ height:100%; background:var(--cyan); width:0; transition:width .9s cubic-bezier(.2,.6,.2,1); }
 
-  .info-banner{
-    font-size:13.5px; border-radius:9px; padding:12px 16px; margin-bottom:24px;
-    background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.3); color:var(--green);
-  }
-
+  .plan-name{ font-stretch:125%; font-weight:800; font-size:32px; letter-spacing:-.02em; line-height:1; }
+  .plan-note{ color:var(--ink-2); font-size:14px; margin-top:8px; }
   .manage-link{
-    font-size:12.5px; color:var(--text-dimmer); display:inline-block; margin-top:14px;
+    display:inline-block; margin-top:14px; font-size:13.5px;
+    color:var(--cyan-ink); text-decoration:underline; text-underline-offset:3px; cursor:pointer;
   }
-  .manage-link:hover{ color:var(--text-dim); text-decoration:underline; }
+  .manage-link:hover{ color:var(--ink); }
 
-  .help-steps{
-    list-style:none; counter-reset:step; margin:4px 0 18px;
+  /* ---------- Upgrade ---------- */
+  .upgrade{
+    background:var(--ink); color:#fff; border:1px solid var(--ink);
+    border-radius:3px; box-shadow:var(--sheet-shadow);
+    padding:28px 30px; margin-top:20px;
+    display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap;
   }
-  .help-steps li{
-    counter-increment:step; display:flex; gap:12px; align-items:flex-start;
-    font-size:14px; color:var(--text-dim); padding:6px 0;
-  }
-  .help-steps li::before{
-    content:counter(step); flex-shrink:0;
-    width:20px; height:20px; border-radius:50%;
-    background:rgba(139,92,246,0.12); border:1px solid var(--border);
-    color:var(--purple); font-family:var(--mono); font-size:11px; font-weight:500;
-    display:flex; align-items:center; justify-content:center;
-  }
-  .help-steps code{
-    font-family:var(--mono); font-size:12px; color:var(--text);
-    background:var(--bg-elevated); padding:2px 6px; border-radius:4px;
-  }
-  .mini-code{
-    font-family:var(--mono); font-size:12.5px; line-height:1.7; color:var(--text-dim);
-    background:var(--bg-elevated); border:1px solid var(--border); border-radius:9px;
-    padding:16px 18px; overflow-x:auto;
-  }
-  .mini-code .k{ color:var(--purple); }
-  .mini-code .s{ color:var(--pink); }
-  .mini-code .c{ color:var(--text-dimmer); }
-  .help-steps strong{ color:var(--text); font-weight:600; }
+  .upgrade h3{ font-size:19px; font-weight:700; margin-bottom:6px; }
+  .upgrade p{ color:#c3c9ce; font-size:14.5px; max-width:46ch; }
 
-  .api-notes-list{
-    list-style:none; margin:16px 0 0; padding:0;
-    display:grid; gap:1px; background:var(--border);
-    border:1px solid var(--border); border-radius:10px; overflow:hidden;
-  }
-  .api-notes-list li{
-    background:var(--bg-elevated); padding:12px 16px;
-    font-size:13px; color:var(--text-dim); line-height:1.55;
-  }
-  .api-notes-list strong{ color:var(--text); font-weight:600; }
-  .api-notes-list code{
-    font-family:var(--mono); font-size:11.5px; color:var(--text);
-    background:var(--surface); padding:2px 5px; border-radius:4px;
+  .section-label{ margin:40px 0 16px; display:block; }
+
+  .loading, .error-state{ padding:100px 0; text-align:center; color:var(--ink-2); }
+  .error-state{ color:var(--alert); }
+
+  .banner{
+    font-size:14px; padding:13px 16px; border-radius:2px; margin-bottom:28px;
+    background:var(--cyan-wash); border-left:3px solid var(--cyan); color:var(--cyan-ink);
   }
 
-  .section-label{
-    font-family:var(--display); font-size:14px; font-weight:600;
-    color:var(--text-dim); text-transform:uppercase; letter-spacing:.04em;
-    margin:36px 0 14px;
-  }
+  .steps{ margin-bottom:20px; }
+  .notes{ margin-top:2px; }
 
-  footer{
-    text-align:center; padding:24px; color:var(--text-dimmer); font-size:13px;
-  }
-  footer a{ color:inherit; }
-
-  @media (max-width:640px){
-    .grid{ grid-template-columns:1fr; }
-    .nav-right .user-email{ display:none; }
+  @media (max-width:680px){
+    .row-2{ grid-template-columns:1fr; }
+    .user-email{ display:none; }
+    main{ padding:32px 0 72px; }
   }
 </style>
 </head>
 <body>
-<div class="bg-grid"></div>
 
-<div class="wrap">
-  <nav>
-    <a href="index.html" class="logo"><img src="logo.png" alt="" class="logo-mark">PixelPDF</a>
-    <div class="nav-right">
+<header class="site-head">
+  <div class="wrap">
+    <a href="index.html" class="brand">
+      <svg class="brand-mark" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M4.6 2.6h8.8l6 6v12.8h-14.8z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        <path d="M13.4 2.6v6h6" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        <rect x="7.6" y="12.4" width="3.2" height="3.2" fill="#00a3e0"/>
+        <rect x="11.2" y="12.4" width="3.2" height="3.2" fill="#00a3e0" opacity=".45"/>
+        <rect x="7.6" y="16" width="3.2" height="3.2" fill="#00a3e0" opacity=".45"/>
+        <rect x="11.2" y="16" width="3.2" height="3.2" fill="#00a3e0"/>
+      </svg>
+      <span>PixelPDF</span>
+    </a>
+    <div class="head-actions">
       <span class="user-email" id="user-email"></span>
-      <button class="btn-secondary" id="logout-btn">Log out</button>
+      <button class="btn btn-quiet btn-small" id="logout-btn">Log out</button>
     </div>
-  </nav>
-</div>
+  </div>
+</header>
 
 <main class="wrap" id="main-content">
-  <div class="loading" id="loading">Loading your dashboard …</div>
+  <div class="loading" id="loading">Loading your dashboard…</div>
 </main>
 
-<footer>© 2026 PixelPDF · <a href="impressum.html">Imprint</a> · <a href="datenschutz.html">Privacy Policy</a> · <a href="agb.html">Terms</a></footer>
+<footer class="site-foot">
+  <div class="wrap">
+    <div>© 2026 PixelPDF</div>
+    <div class="foot-links">
+      <a href="index.html">Home</a>
+      <a href="impressum.html">Imprint</a>
+      <a href="datenschutz.html">Privacy Policy</a>
+      <a href="agb.html">Terms</a>
+    </div>
+  </div>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-client.js"></script>
@@ -263,6 +151,23 @@
   const FAIR_USE_LIMIT_PRO = 2000;
   const mainContent = document.getElementById("main-content");
   const userEmailEl = document.getElementById("user-email");
+
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Zahlen zaehlen beim Laden hoch. Bei reduzierter Bewegung steht der Wert
+  // sofort da, damit niemand auf eine Animation warten muss.
+  function countUp(el, target){
+    if (prefersReducedMotion || target <= 0) { el.textContent = target; return; }
+    const duration = 700;
+    const start = performance.now();
+    function frame(now){
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = Math.round(target * eased);
+      if (t < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
 
   function renderDashboard(profile, email){
     userEmailEl.textContent = email;
@@ -272,105 +177,133 @@
 
     let usageCardHtml;
     if (isPro) {
-      const used = profile.monthly_usage || 0;
-      const pct = Math.min(100, (used / FAIR_USE_LIMIT_PRO) * 100);
       usageCardHtml = `
-        <h3>Usage this month</h3>
-        <div class="stat-value">${used} <span style="font-size:16px;color:var(--text-dim);font-weight:500;">/ ${FAIR_USE_LIMIT_PRO}</span></div>
-        <div class="stat-label">conversions (fair-use limit)</div>
-        <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+        <span class="spec">Used this month</span>
+        <div class="stat"><span id="stat-number">0</span> <small>/ ${FAIR_USE_LIMIT_PRO}</small></div>
+        <div class="stat-label">conversions against the fair-use limit</div>
+        <div class="track"><div class="fill" id="usage-fill"></div></div>
       `;
     } else {
       usageCardHtml = `
-        <h3>Credits remaining</h3>
-        <div class="stat-value">${profile.credits_remaining}</div>
-        <div class="stat-label">conversions left</div>
+        <span class="spec">Credits left</span>
+        <div class="stat"><span id="stat-number">0</span></div>
+        <div class="stat-label">conversions remaining</div>
       `;
     }
 
     const justUpgraded = new URLSearchParams(window.location.search).get("upgraded") === "1";
     const bannerHtml = !justUpgraded ? "" : isPro
-      ? `<div class="info-banner">You're on Pro now — thanks!</div>`
-      : `<div class="info-banner">Payment received — syncing with Stripe. If this still shows Free, refresh in a few seconds.</div>`;
+      ? `<div class="banner">You're on Pro now. Thanks.</div>`
+      : `<div class="banner">Payment received, syncing with Stripe. If this still shows Free, refresh in a few seconds.</div>`;
 
     const upgradeHtml = isPro ? "" : `
-      <div class="upgrade-card" style="margin-top:20px;">
+      <div class="upgrade rise rise-4">
         <div>
-          <h3>Upgrade to Pro</h3>
-          <p>Unlimited conversions (fair-use ${FAIR_USE_LIMIT_PRO}/month) for €5/month.</p>
+          <h3>Go Pro for €5 a month</h3>
+          <p>Unlimited conversions, with a fair-use limit of ${FAIR_USE_LIMIT_PRO} per month. Cancel any time.</p>
         </div>
-        <button class="btn-primary" id="upgrade-btn">Go Pro</button>
+        <button class="btn btn-invert" id="upgrade-btn">Go Pro</button>
       </div>
     `;
 
     mainContent.innerHTML = `
       <h1>Dashboard</h1>
-      <p class="page-sub">Your API key, plan, and usage — plus how to wire it into Make or Zapier.</p>
+      <p class="page-sub">Your key, your plan, and how to drop it into Make or Zapier.</p>
 
       ${bannerHtml}
 
-      <div class="grid">
-        <div class="card">
-          <h3>Plan</h3>
-          <span class="plan-badge ${isPro ? "pro" : ""}">${planLabel}</span>
+      <div class="card rise">
+        <span class="spec">Your API key</span>
+        <div class="key-strip">
+          <code class="key-value" id="api-key-value">${"•".repeat(32)}</code>
+          <div class="key-actions">
+            <button class="key-btn" id="toggle-key-btn" type="button">Show</button>
+            <button class="key-btn" id="copy-key-btn" type="button">Copy</button>
+            <button class="key-btn danger" id="regenerate-key-btn" type="button">Regenerate</button>
+          </div>
+        </div>
+        <p class="key-hint">
+          You can copy it without revealing it. Keep it secret: anyone holding this key can
+          spend your conversions. If it ever leaks, <strong>Regenerate</strong> replaces it immediately.
+        </p>
+      </div>
+
+      <div class="row-2">
+        <div class="card rise rise-2">
+          <span class="spec">Plan</span>
+          <div class="plan-name">${planLabel}</div>
+          <p class="plan-note">${isPro ? "€5 per month, renews automatically." : "200 free conversions, one time."}</p>
           ${isPro ? `<a href="#" id="manage-billing-link" class="manage-link">Manage subscription</a>` : ""}
         </div>
-        <div class="card">
+        <div class="card rise rise-3">
           ${usageCardHtml}
         </div>
       </div>
 
-      <div class="card">
-        <h3>API key</h3>
-        <div class="api-key-row">
-          <code id="api-key-value">${"•".repeat(28)}</code>
-          <button class="copy-btn" id="toggle-key-btn" type="button">Show</button>
-          <button class="copy-btn" id="copy-key-btn" type="button">Copy</button>
-          <button class="copy-btn danger" id="regenerate-key-btn" type="button">Regenerate</button>
-        </div>
-        <div class="key-hint">Keep this secret — it authorizes conversions against your account. You can copy it without revealing it. If it ever leaks, <strong>Regenerate</strong> replaces it immediately.</div>
-      </div>
+      <span class="spec section-label">Quickstart</span>
 
-      <div class="section-label">Quickstart</div>
+      <ol class="steps">
+        <li class="step"><span>Copy your key above. You do not need to reveal it first.</span></li>
+        <li class="step"><span>In your scenario, add an <strong>HTTP → Make a request</strong> module set to <code>POST</code>.</span></li>
+        <li class="step"><span>Point it at <code>${API_BASE_URL}/convert</code> and add the header <code>X-API-Key</code> with your key.</span></li>
+        <li class="step"><span>Attach your PDF as a <code>file</code> field using <code>multipart/form-data</code>, then run it.</span></li>
+      </ol>
 
-      <div class="card">
-        <h3>Use it in Make or Zapier</h3>
-        <ol class="help-steps">
-          <li><span>Copy your API key above — click <strong>Copy</strong> (revealing it first is optional).</span></li>
-          <li><span>In your scenario, add an <strong>HTTP → Make a request</strong> module and set the method to <code>POST</code>.</span></li>
-          <li><span>Set the URL to <code>${API_BASE_URL}/convert</code> and add a header <code>X-API-Key</code> with your key.</span></li>
-          <li><span>Set the body type to <code>multipart/form-data</code>, add a field named <code>file</code> holding your PDF, then run it.</span></li>
-        </ol>
-        <div class="mini-code"><span class="k">POST</span> ${API_BASE_URL}/convert
+<pre class="codeblock"><span class="m">POST</span> ${API_BASE_URL}/convert
 
-<span class="c"># Header</span>
-X-API-Key: <span class="s">your_api_key</span>
+X-API-Key:    <span class="v">your_api_key</span>
+Content-Type: multipart/form-data
 
-<span class="c"># Body — multipart/form-data</span>
-file: <span class="s">your_file.pdf</span></div>
-        <ul class="api-notes-list">
-          <li><strong>Response:</strong> a single-page PDF returns a <code>PNG</code> image; a multi-page PDF returns a <code>ZIP</code> with one PNG per page.</li>
-          <li><strong>Limits:</strong> up to 5 pages and 10&nbsp;MB per file. Larger files are rejected with <code>413</code>.</li>
-          <li><strong>If a request fails:</strong> <code>402</code> means you're out of credits — upgrade to Pro below to keep converting.</li>
-        </ul>
+file:         <span class="v">your_file.pdf</span></pre>
+
+      <div class="notes">
+        <div class="note"><span class="spec">Output</span><span>One page returns a <code>PNG</code>. More than one page returns a <code>ZIP</code> holding one PNG per page.</span></div>
+        <div class="note"><span class="spec">Limits</span><span>Up to 5 pages and 10&nbsp;MB per file. Anything larger comes back as <code>413</code>.</span></div>
+        <div class="note"><span class="spec">If it fails</span><span><code>402</code> means your free credits are used up. <code>429</code> means the Pro fair-use limit is reached.</span></div>
       </div>
 
       ${upgradeHtml}
     `;
 
+    // Zahlen und Balken erst nach dem Einsetzen ins DOM animieren.
+    const statNumber = document.getElementById("stat-number");
+    if (statNumber) countUp(statNumber, isPro ? (profile.monthly_usage || 0) : profile.credits_remaining);
+
+    const usageFill = document.getElementById("usage-fill");
+    if (usageFill) {
+      const pct = Math.min(100, ((profile.monthly_usage || 0) / FAIR_USE_LIMIT_PRO) * 100);
+      if (prefersReducedMotion) {
+        usageFill.style.transition = "none";
+        usageFill.style.width = pct + "%";
+      } else {
+        requestAnimationFrame(() => { usageFill.style.width = pct + "%"; });
+      }
+    }
+
     let keyVisible = false;
     const keyValueEl = document.getElementById("api-key-value");
     const toggleKeyBtn = document.getElementById("toggle-key-btn");
+
+    // Der Key wischt von links herein, dieselbe Geste wie der Scan auf der
+    // Startseite: die cyanfarbene Linie macht etwas sichtbar.
+    function setKeyText(text){
+      keyValueEl.textContent = text;
+      if (prefersReducedMotion) return;
+      keyValueEl.classList.remove("wipe");
+      void keyValueEl.offsetWidth;
+      keyValueEl.classList.add("wipe");
+    }
+
     toggleKeyBtn.addEventListener("click", () => {
       keyVisible = !keyVisible;
-      keyValueEl.textContent = keyVisible ? profile.api_key : "•".repeat(28);
+      setKeyText(keyVisible ? profile.api_key : "•".repeat(32));
       toggleKeyBtn.textContent = keyVisible ? "Hide" : "Show";
     });
 
     document.getElementById("copy-key-btn").addEventListener("click", () => {
       navigator.clipboard.writeText(profile.api_key);
       const btn = document.getElementById("copy-key-btn");
-      btn.textContent = "Copied!";
+      btn.textContent = "Copied";
       setTimeout(() => { btn.textContent = "Copy"; }, 1500);
     });
 
@@ -398,7 +331,7 @@ file: <span class="s">your_file.pdf</span></div>
 
         profile.api_key = data.api_key;
         keyVisible = true;                       // neuen Key direkt zeigen, er muss ja kopiert werden
-        keyValueEl.textContent = profile.api_key;
+        setKeyText(profile.api_key);
         toggleKeyBtn.textContent = "Hide";
         regenerateBtn.textContent = "New key ready";
       } catch (err) {

@@ -35,3 +35,33 @@
 
   sections.forEach((s) => observer.observe(s));
 })();
+
+// Reading progress. Same cyan line used everywhere else on the site, here
+// showing how far through a long document you are. The element is created
+// here rather than in each page's markup so the three legal documents stay
+// pure content.
+(function () {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  const bar = document.createElement("div");
+  bar.className = "readbar";
+  document.body.appendChild(bar);
+
+  let queued = false;
+  const update = () => {
+    const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = scrollable > 0 ? Math.min(1, window.scrollY / scrollable) : 0;
+    bar.style.transform = "scaleX(" + progress + ")";
+    queued = false;
+  };
+
+  const onScroll = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(update);
+  };
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll, { passive: true });
+  update();
+})();

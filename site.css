@@ -1,0 +1,261 @@
+/* ==================================================================
+   PixelPDF — gemeinsames Design-System fuer alle Seiten.
+
+   Bildwelt: Scannerbett. Der Seitenhintergrund ist die kuehle graue
+   Auflageflaeche, jeder Inhaltsblock ein weisses Blatt darauf. Akzent
+   ist Prozess-Cyan (das C aus CMYK). Rot kommt ausschliesslich bei
+   Fehlern vor, sonst hat die Seite nur zwei Farben.
+
+   Eine einzige Bewegungsidee, ueberall dieselbe: eine cyanfarbene
+   Linie, die etwas sichtbar macht. Startseite -> scannt das Dokument.
+   Login -> ueberstreicht die Karte. Dashboard -> schiebt den API-Key
+   ins Bild. Rechtsseiten -> zeigt den Lesefortschritt.
+   ================================================================== */
+
+:root{
+  --bed:#e3e6e1;
+  --bed-deep:#d5d9d3;
+  --sheet:#ffffff;
+  --ink:#15181c;
+  --ink-2:#565c63;
+  --ink-3:#878d93;
+  --rule:#ccd0ca;
+  --rule-sheet:#e6e8e4;
+  --cyan:#00a3e0;
+  --cyan-ink:#00648f;
+  --cyan-wash:#e8f6fd;
+
+  /* Rot ist die einzige Ausnahme von der Zweifarbigkeit und
+     ausschliesslich fuer Fehlermeldungen reserviert. */
+  --alert:#b42318;
+  --alert-wash:#fef3f2;
+
+  --display:'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --mono:'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --sheet-shadow:0 1px 0 rgba(21,24,28,.04), 0 12px 28px -18px rgba(21,24,28,.35);
+}
+
+*{ box-sizing:border-box; margin:0; padding:0; }
+html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+
+body{
+  background:var(--bed);
+  color:var(--ink);
+  font-family:var(--display);
+  font-stretch:100%;
+  font-size:16px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+
+a{ color:inherit; text-decoration:none; }
+ul,ol{ list-style:none; }
+
+:focus-visible{
+  outline:2px solid var(--cyan-ink);
+  outline-offset:3px;
+  border-radius:1px;
+}
+
+.wrap{ max-width:1120px; margin:0 auto; padding:0 28px; }
+.wrap-narrow{ max-width:900px; }
+
+/* Alle Abstaende zwischen Abschnitten laufen ueber diese eine Klasse.
+   Nie per Element-Selektor nachjustieren, sonst heben sie sich auf. */
+.section{ padding:104px 0; }
+.section-tight{ padding-top:0; }
+
+/* Technische Beschriftung: alles was eine Spezifikation ist, sieht
+   auch danach aus. Eyebrows, Tabellenkoepfe, Bildunterschriften. */
+.spec{
+  font-family:var(--mono); font-size:11px; font-weight:500;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--ink-3);
+}
+
+h1,h2,h3{ font-stretch:125%; letter-spacing:-.01em; line-height:1.08; }
+
+/* ---------- Schaltflaechen ---------- */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:9px;
+  padding:14px 24px; border-radius:2px;
+  font-family:var(--display); font-stretch:112%; font-weight:600; font-size:15px;
+  border:1px solid transparent; cursor:pointer; text-align:center;
+  transition:background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+.btn-solid{ background:var(--ink); color:#fff; }
+.btn-solid:hover{ background:#000; }
+.btn-line{ border-color:var(--ink); color:var(--ink); background:transparent; }
+.btn-line:hover{ background:rgba(21,24,28,.06); }
+.btn-quiet{ border-color:var(--rule); color:var(--ink-2); background:transparent; }
+.btn-quiet:hover{ border-color:var(--ink); color:var(--ink); }
+.btn-invert{ background:#fff; color:var(--ink); }
+.btn-invert:hover{ background:#e9ece8; }
+.btn-small{ padding:9px 16px; font-size:14px; }
+.btn:disabled{ opacity:.55; cursor:default; }
+.btn-block{ width:100%; }
+
+/* ---------- Kopf- und Fusszeile ---------- */
+.site-head{ border-bottom:1px solid var(--rule); background:var(--bed); }
+.site-head .wrap{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:24px; padding-top:20px; padding-bottom:20px;
+}
+.brand{ display:flex; align-items:center; gap:10px; flex-shrink:0; }
+.brand-mark{ display:block; color:var(--ink); }
+.brand span{ font-stretch:125%; font-weight:700; font-size:17px; letter-spacing:-.01em; }
+
+.nav{ display:flex; align-items:center; gap:28px; }
+.nav a{ font-size:14.5px; font-weight:500; color:var(--ink-2); }
+.nav a:hover{ color:var(--ink); }
+.head-actions{ display:flex; align-items:center; gap:14px; }
+
+.site-foot{ border-top:1px solid var(--rule); }
+.site-foot .wrap{
+  display:flex; justify-content:space-between; align-items:center;
+  gap:20px; flex-wrap:wrap; padding-top:28px; padding-bottom:44px;
+  font-size:13.5px; color:var(--ink-3);
+}
+.foot-links{ display:flex; gap:22px; flex-wrap:wrap; }
+.foot-links a:hover{ color:var(--ink); }
+
+/* ---------- Papier ---------- */
+.sheet{
+  background:var(--sheet); border:1px solid var(--rule-sheet);
+  border-radius:3px; box-shadow:var(--sheet-shadow);
+}
+
+/* ---------- Nummerierte Abfolge ----------
+   Nummern nur dort, wo die Reihenfolge wirklich etwas bedeutet. */
+.steps{ counter-reset:step; display:grid; gap:2px; }
+.step{
+  counter-increment:step;
+  display:grid; grid-template-columns:auto 1fr; gap:18px; align-items:baseline;
+  background:var(--sheet); border:1px solid var(--rule-sheet);
+  padding:18px 22px; border-radius:2px;
+  font-size:15.5px; color:var(--ink-2);
+  min-width:0;
+}
+.step::before{
+  content:counter(step,decimal-leading-zero);
+  font-family:var(--mono); font-size:12px; font-weight:500;
+  color:var(--cyan-ink); letter-spacing:.08em;
+}
+/* Rasterelemente sind von Haus aus min-width:auto und werden von einem
+   langen, unumbrechbaren Wort auseinandergedrueckt. Ohne das hier schiebt
+   die Endpunkt-URL auf dem Telefon die ganze Seite nach rechts. */
+.step > span{ min-width:0; overflow-wrap:anywhere; }
+.step strong{ color:var(--ink); font-weight:600; }
+.step a{ color:var(--cyan-ink); text-decoration:underline; text-underline-offset:3px; }
+
+code{
+  font-family:var(--mono); font-size:13.5px; color:var(--ink);
+  background:#eff1ee; padding:1px 5px; border-radius:2px;
+}
+
+.codeblock{
+  font-family:var(--mono); font-size:13px; line-height:1.85;
+  color:var(--ink-2); background:var(--sheet);
+  border:1px solid var(--rule-sheet); border-radius:2px;
+  padding:20px 22px; overflow-x:auto; min-width:0;
+}
+.codeblock code{ background:none; padding:0; font-size:inherit; }
+.codeblock .m{ color:var(--ink); font-weight:600; }
+.codeblock .v{ color:var(--cyan-ink); }
+.codeblock .c{ color:var(--ink-3); }
+
+/* ---------- Beschriftete Hinweiszeilen ---------- */
+.notes{ display:grid; gap:2px; }
+.note{
+  background:var(--sheet); border:1px solid var(--rule-sheet); border-radius:2px;
+  padding:14px 22px; font-size:14.5px; color:var(--ink-2);
+  display:grid; grid-template-columns:120px 1fr; gap:18px; align-items:baseline;
+  min-width:0;
+}
+.note > span{ min-width:0; overflow-wrap:anywhere; }
+
+/* ---------- Formulare ---------- */
+.field{ margin-bottom:18px; }
+.field > label{
+  display:block; margin-bottom:7px;
+  font-family:var(--mono); font-size:11px; font-weight:500;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--ink-3);
+}
+input[type="email"], input[type="password"], input[type="text"]{
+  width:100%; background:#fbfcfb; color:var(--ink);
+  border:1px solid var(--rule); border-radius:2px;
+  padding:13px 14px; font-size:15px;
+  font-family:var(--display); font-stretch:100%;
+  transition:border-color .15s ease, background-color .15s ease;
+}
+input:focus{ outline:none; border-color:var(--ink); background:#fff; }
+input:focus-visible{ outline:2px solid var(--cyan-ink); outline-offset:2px; }
+
+/* ---------- Meldungen ---------- */
+.msg{ display:none; font-size:14px; padding:12px 15px; border-radius:2px; margin-bottom:20px; }
+.msg.error{ display:block; background:var(--alert-wash); border-left:3px solid var(--alert); color:var(--alert); }
+.msg.success{ display:block; background:var(--cyan-wash); border-left:3px solid var(--cyan); color:var(--cyan-ink); }
+
+/* ==================================================================
+   Bewegung. Eine Idee, vier Auspraegungen. Alles hier gilt nur,
+   solange der Besucher keine reduzierte Bewegung angefordert hat.
+   ================================================================== */
+
+/* Die Linie selbst. Sie liegt immer in einem position:relative-Elternteil. */
+.scanline{
+  position:absolute; left:0; right:0; top:0; height:2px;
+  background:var(--cyan); box-shadow:0 0 18px 5px rgba(0,163,224,.45);
+  opacity:0; pointer-events:none; z-index:2;
+}
+
+@keyframes scan-sweep{
+  0%{ top:0; opacity:1; }
+  92%{ opacity:1; }
+  100%{ top:100%; opacity:0; }
+}
+/* Startzustand steht in den Keyframes, nicht am Element: faellt die
+   Animation weg, bleibt der Inhalt sichtbar statt fuer immer beschnitten. */
+@keyframes scan-reveal{
+  from{ clip-path:inset(0 0 100% 0); }
+  to  { clip-path:inset(0 0 0% 0); }
+}
+@keyframes wipe-in{
+  from{ clip-path:inset(0 100% 0 0); }
+  to  { clip-path:inset(0 0 0 0); }
+}
+@keyframes rise{
+  from{ opacity:0; transform:translateY(10px); }
+  to  { opacity:1; transform:none; }
+}
+
+.is-scanned .scanline{ animation:scan-sweep 1.1s cubic-bezier(.32,0,.2,1) both; }
+.is-scanned .scan-target{ animation:scan-reveal 1.1s cubic-bezier(.32,0,.2,1) both; }
+.wipe{ animation:wipe-in .45s cubic-bezier(.32,0,.2,1) both; }
+.rise{ animation:rise .5s cubic-bezier(.2,.6,.2,1) both; }
+.rise-2{ animation-delay:.07s; }
+.rise-3{ animation-delay:.14s; }
+.rise-4{ animation-delay:.21s; }
+
+/* Lesefortschritt auf den Rechtsseiten: dieselbe cyanfarbene Linie,
+   diesmal waagerecht und an das Scrollen gekoppelt. */
+.readbar{
+  position:fixed; top:0; left:0; height:2px; width:100%;
+  transform:scaleX(0); transform-origin:0 50%;
+  background:var(--cyan); z-index:50; pointer-events:none;
+}
+
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  .is-scanned .scanline{ animation:none; opacity:0; }
+  .is-scanned .scan-target,
+  .wipe, .rise{ animation:none; }
+  .readbar{ display:none; }
+}
+
+/* ---------- Schmale Fenster ---------- */
+@media (max-width:680px){
+  .section{ padding:72px 0; }
+  .note{ grid-template-columns:1fr; gap:6px; }
+  .site-foot .wrap{ flex-direction:column; align-items:flex-start; }
+}
