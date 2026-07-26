@@ -59,6 +59,17 @@
   }
   .switch-mode button:hover{ color:var(--ink); }
 
+  /* Passwort-Label und "Passwort vergessen?" auf einer Zeile, wie bei den
+     meisten Login-Formularen ueblich. */
+  .field-label-row{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom:7px; }
+  .field-label-row label{ margin-bottom:0; }
+  .link-quiet{
+    background:none; border:none; padding:0; cursor:pointer;
+    font-family:var(--mono); font-size:11.5px; font-weight:500; color:var(--ink-3);
+    transition:color .15s ease;
+  }
+  .link-quiet:hover{ color:var(--cyan-ink); }
+
   .terms-line{
     text-align:center; font-size:12.5px; color:var(--ink-3);
     margin-top:24px; padding-top:20px; border-top:1px solid var(--rule-sheet);
@@ -71,6 +82,8 @@
     font-size:13px; color:var(--ink-3);
   }
   .auth-foot a:hover{ color:var(--ink); }
+
+  .hidden{ display:none; }
 </style>
 </head>
 <body>
@@ -130,19 +143,26 @@
         <label for="email">Email</label>
         <input type="email" id="email" required autocomplete="email">
       </div>
-      <div class="field">
-        <label for="password">Password</label>
+      <div class="field" id="password-field">
+        <div class="field-label-row">
+          <label for="password">Password</label>
+          <button type="button" class="link-quiet" id="forgot-btn">Forgot password?</button>
+        </div>
         <input type="password" id="password" required autocomplete="current-password" minlength="6">
       </div>
       <button type="submit" class="btn btn-solid btn-block" id="submit-btn">Log in</button>
     </form>
 
-    <div class="switch-mode">
+    <div class="switch-mode" id="switch-mode-row">
       <span id="switch-text">Don't have an account?</span>
       <button type="button" id="switch-btn">Sign up</button>
     </div>
 
-    <p class="terms-line">
+    <div class="switch-mode hidden" id="back-row">
+      <button type="button" id="back-to-login-btn">← Back to log in</button>
+    </div>
+
+    <p class="terms-line" id="terms-line">
       By continuing you agree to our <a href="agb.html">Terms</a> and <a href="datenschutz.html">Privacy Policy</a>.
     </p>
   </div>
@@ -159,17 +179,24 @@
 <script src="supabase-client.js"></script>
 <script src="theme.js"></script>
 <script>
-  let mode = "login"; // "login" | "signup"
+  let mode = "login"; // "login" | "signup" | "reset"
 
   const form = document.getElementById("auth-form");
   const emailInput = document.getElementById("email");
   const passwordInput = document.getElementById("password");
+  const passwordField = document.getElementById("password-field");
   const submitBtn = document.getElementById("submit-btn");
   const messageBox = document.getElementById("message");
   const title = document.getElementById("form-title");
   const sub = document.getElementById("form-sub");
   const switchText = document.getElementById("switch-text");
   const switchBtn = document.getElementById("switch-btn");
+  const switchModeRow = document.getElementById("switch-mode-row");
+  const backRow = document.getElementById("back-row");
+  const forgotBtn = document.getElementById("forgot-btn");
+  const googleBtn = document.getElementById("google-btn");
+  const dividerEl = document.querySelector(".divider");
+  const termsLine = document.getElementById("terms-line");
   const authSheet = document.getElementById("auth-sheet");
 
   function showMessage(text, type){
@@ -216,9 +243,12 @@
     el.classList.add("wipe");
   }
 
-  switchBtn.addEventListener("click", () => {
-    mode = mode === "login" ? "signup" : "login";
+  // Ein Formular, drei Auspraegungen. Nur Text und welche Bloecke sichtbar
+  // sind aendern sich, Karte und Bewegung bleiben dieselben.
+  function applyMode(next){
+    mode = next;
     clearMessage();
+
     if (mode === "signup") {
       title.textContent = "Create your account";
       sub.textContent = "200 free conversions. Takes about a minute.";
@@ -226,6 +256,22 @@
       switchText.textContent = "Already have an account?";
       switchBtn.textContent = "Log in";
       passwordInput.setAttribute("autocomplete", "new-password");
+      passwordField.classList.remove("hidden");
+      googleBtn.classList.remove("hidden");
+      dividerEl.classList.remove("hidden");
+      termsLine.classList.remove("hidden");
+      switchModeRow.classList.remove("hidden");
+      backRow.classList.add("hidden");
+    } else if (mode === "reset") {
+      title.textContent = "Reset your password";
+      sub.textContent = "We'll email you a link to set a new one.";
+      submitBtn.textContent = "Send reset link";
+      passwordField.classList.add("hidden");
+      googleBtn.classList.add("hidden");
+      dividerEl.classList.add("hidden");
+      termsLine.classList.add("hidden");
+      switchModeRow.classList.add("hidden");
+      backRow.classList.remove("hidden");
     } else {
       title.textContent = "Welcome back";
       sub.textContent = "Log in to see your dashboard.";
@@ -233,17 +279,28 @@
       switchText.textContent = "Don't have an account?";
       switchBtn.textContent = "Sign up";
       passwordInput.setAttribute("autocomplete", "current-password");
+      passwordField.classList.remove("hidden");
+      googleBtn.classList.remove("hidden");
+      dividerEl.classList.remove("hidden");
+      termsLine.classList.remove("hidden");
+      switchModeRow.classList.remove("hidden");
+      backRow.classList.add("hidden");
     }
+
     replayWipe(title);
     replayWipe(sub);
-  });
+  }
+
+  switchBtn.addEventListener("click", () => applyMode(mode === "login" ? "signup" : "login"));
+  forgotBtn.addEventListener("click", () => applyMode("reset"));
+  document.getElementById("back-to-login-btn").addEventListener("click", () => applyMode("login"));
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     clearMessage();
     submitBtn.disabled = true;
     const originalLabel = submitBtn.textContent;
-    submitBtn.textContent = mode === "signup" ? "Creating your account…" : "Logging in…";
+    submitBtn.textContent = mode === "signup" ? "Creating your account…" : mode === "reset" ? "Sending…" : "Logging in…";
 
     const email = emailInput.value.trim();
     const password = passwordInput.value;
@@ -258,6 +315,12 @@
         } else {
           showMessage("Almost there. Confirm your email address using the link we just sent you.", "success");
         }
+      } else if (mode === "reset") {
+        const { error } = await sb.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin + "/reset-password.html",
+        });
+        if (error) throw error;
+        showMessage("Check your email for a link to reset your password.", "success");
       } else {
         const { error } = await sb.auth.signInWithPassword({ email, password });
         if (error) throw error;
