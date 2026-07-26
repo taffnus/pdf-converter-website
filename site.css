@@ -13,9 +13,12 @@
    ================================================================== */
 
 :root{
+  color-scheme: light dark;
+
   --bed:#e3e6e1;
   --bed-deep:#d5d9d3;
   --sheet:#ffffff;
+  --well:#fafbfa;
   --ink:#15181c;
   --ink-2:#565c63;
   --ink-3:#878d93;
@@ -30,10 +33,96 @@
   --alert:#b42318;
   --alert-wash:#fef3f2;
 
+  /* Gegenfarben fuer Flaechen, die auf --ink liegen (Pro-Karte, Kontaktkarte,
+     Upgrade-Kasten): im Hellmodus weiss auf dunkel, im Dunkelmodus gedreht. */
+  --ink-hover:#000000;
+  --on-ink:#ffffff;
+  --on-ink-hover:#e9ece8;
+  --on-ink-2:#c3c9ce;
+  --on-ink-3:#a9b0b7;
+  --on-ink-4:#8d949b;
+
   --display:'Archivo', 'Helvetica Neue', Arial, sans-serif;
   --mono:'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --sheet-shadow:0 1px 0 rgba(21,24,28,.04), 0 12px 28px -18px rgba(21,24,28,.35);
+}
+
+/* ==================================================================
+   Dunkelmodus. Gleiche Bildwelt, gedrehte Werte: das Scannerbett wird
+   zur dunklen Auflageflaeche, das Blatt bleibt die hellere Flaeche
+   darauf. Folgt automatisch der Systemeinstellung; ein Klick auf den
+   Schalter (`[data-theme]`) ueberschreibt sie gezielt.
+   ================================================================== */
+@media (prefers-color-scheme: dark){
+  :root{
+    --bed:#14171a;
+    --bed-deep:#0b0d0f;
+    --sheet:#1e2227;
+    --well:#1a1e22;
+    --ink:#eceeef;
+    --ink-2:#a6acb3;
+    --ink-3:#767d85;
+    --rule:#33383e;
+    --rule-sheet:#2a2f35;
+    --cyan-ink:#4fc3f7;
+    --cyan-wash:#0d2733;
+    --alert:#f2887d;
+    --alert-wash:#3a1512;
+    --sheet-shadow:0 1px 0 rgba(0,0,0,.5), 0 16px 32px -18px rgba(0,0,0,.6);
+    --ink-hover:#ffffff;
+    --on-ink:#15181c;
+    --on-ink-hover:#262b30;
+    --on-ink-2:#4b5560;
+    --on-ink-3:#5f6870;
+    --on-ink-4:#767f88;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bed:#14171a;
+  --bed-deep:#0b0d0f;
+  --sheet:#1e2227;
+  --well:#1a1e22;
+  --ink:#eceeef;
+  --ink-2:#a6acb3;
+  --ink-3:#767d85;
+  --rule:#33383e;
+  --rule-sheet:#2a2f35;
+  --cyan-ink:#4fc3f7;
+  --cyan-wash:#0d2733;
+  --alert:#f2887d;
+  --alert-wash:#3a1512;
+  --sheet-shadow:0 1px 0 rgba(0,0,0,.5), 0 16px 32px -18px rgba(0,0,0,.6);
+  --ink-hover:#ffffff;
+  --on-ink:#15181c;
+  --on-ink-hover:#262b30;
+  --on-ink-2:#4b5560;
+  --on-ink-3:#5f6870;
+  --on-ink-4:#767f88;
+}
+:root[data-theme="light"]{
+  color-scheme: light;
+  --bed:#e3e6e1;
+  --bed-deep:#d5d9d3;
+  --sheet:#ffffff;
+  --well:#fafbfa;
+  --ink:#15181c;
+  --ink-2:#565c63;
+  --ink-3:#878d93;
+  --rule:#ccd0ca;
+  --rule-sheet:#e6e8e4;
+  --cyan-ink:#00648f;
+  --cyan-wash:#e8f6fd;
+  --alert:#b42318;
+  --alert-wash:#fef3f2;
+  --sheet-shadow:0 1px 0 rgba(21,24,28,.04), 0 12px 28px -18px rgba(21,24,28,.35);
+  --ink-hover:#000000;
+  --on-ink:#ffffff;
+  --on-ink-hover:#e9ece8;
+  --on-ink-2:#c3c9ce;
+  --on-ink-3:#a9b0b7;
+  --on-ink-4:#8d949b;
 }
 
 *{ box-sizing:border-box; margin:0; padding:0; }
@@ -84,14 +173,14 @@ h1,h2,h3{ font-stretch:125%; letter-spacing:-.01em; line-height:1.08; }
   border:1px solid transparent; cursor:pointer; text-align:center;
   transition:background-color .15s ease, color .15s ease, border-color .15s ease;
 }
-.btn-solid{ background:var(--ink); color:#fff; }
-.btn-solid:hover{ background:#000; }
+.btn-solid{ background:var(--ink); color:var(--on-ink); }
+.btn-solid:hover{ background:var(--ink-hover); }
 .btn-line{ border-color:var(--ink); color:var(--ink); background:transparent; }
 .btn-line:hover{ background:rgba(21,24,28,.06); }
 .btn-quiet{ border-color:var(--rule); color:var(--ink-2); background:transparent; }
 .btn-quiet:hover{ border-color:var(--ink); color:var(--ink); }
-.btn-invert{ background:#fff; color:var(--ink); }
-.btn-invert:hover{ background:#e9ece8; }
+.btn-invert{ background:var(--on-ink); color:var(--ink); }
+.btn-invert:hover{ background:var(--on-ink-hover); }
 .btn-small{ padding:9px 16px; font-size:14px; }
 .btn:disabled{ opacity:.55; cursor:default; }
 .btn-block{ width:100%; }
@@ -110,6 +199,38 @@ h1,h2,h3{ font-stretch:125%; letter-spacing:-.01em; line-height:1.08; }
 .nav a{ font-size:14.5px; font-weight:500; color:var(--ink-2); }
 .nav a:hover{ color:var(--ink); }
 .head-actions{ display:flex; align-items:center; gap:14px; }
+
+/* ---------- Theme-Schalter ---------- */
+.theme-toggle{
+  position:relative; flex-shrink:0; width:50px; height:27px; padding:0;
+  border:1px solid var(--rule); border-radius:14px;
+  background:var(--bed-deep); cursor:pointer;
+  transition:border-color .15s ease, background-color .15s ease;
+}
+.theme-toggle:hover{ border-color:var(--ink-3); }
+.theme-icon{
+  position:absolute; top:50%; width:13px; height:13px;
+  transform:translateY(-50%); color:var(--ink-2);
+  transition:color .2s ease;
+}
+.theme-icon-sun{ left:7px; }
+.theme-icon-moon{ right:7px; color:var(--ink-3); }
+.theme-thumb{
+  position:absolute; top:2px; left:2px; width:21px; height:21px;
+  border-radius:50%; background:var(--sheet); box-shadow:var(--sheet-shadow);
+  transition:transform .35s cubic-bezier(.32,0,.2,1);
+}
+@media (prefers-color-scheme: dark){
+  .theme-thumb{ transform:translateX(23px); }
+  .theme-icon-sun{ color:var(--ink-3); }
+  .theme-icon-moon{ color:var(--ink-2); }
+}
+[data-theme="dark"] .theme-thumb{ transform:translateX(23px); }
+[data-theme="dark"] .theme-icon-sun{ color:var(--ink-3); }
+[data-theme="dark"] .theme-icon-moon{ color:var(--ink-2); }
+[data-theme="light"] .theme-thumb{ transform:translateX(0); }
+[data-theme="light"] .theme-icon-sun{ color:var(--ink-2); }
+[data-theme="light"] .theme-icon-moon{ color:var(--ink-3); }
 
 .site-foot{ border-top:1px solid var(--rule); }
 .site-foot .wrap{
@@ -151,7 +272,7 @@ h1,h2,h3{ font-stretch:125%; letter-spacing:-.01em; line-height:1.08; }
 
 code{
   font-family:var(--mono); font-size:13.5px; color:var(--ink);
-  background:#eff1ee; padding:1px 5px; border-radius:2px;
+  background:var(--rule-sheet); padding:1px 5px; border-radius:2px;
 }
 
 .codeblock{
@@ -183,13 +304,13 @@ code{
   letter-spacing:.16em; text-transform:uppercase; color:var(--ink-3);
 }
 input[type="email"], input[type="password"], input[type="text"]{
-  width:100%; background:#fbfcfb; color:var(--ink);
+  width:100%; background:var(--well); color:var(--ink);
   border:1px solid var(--rule); border-radius:2px;
   padding:13px 14px; font-size:15px;
   font-family:var(--display); font-stretch:100%;
   transition:border-color .15s ease, background-color .15s ease;
 }
-input:focus{ outline:none; border-color:var(--ink); background:#fff; }
+input:focus{ outline:none; border-color:var(--ink); background:var(--sheet); }
 input:focus-visible{ outline:2px solid var(--cyan-ink); outline-offset:2px; }
 
 /* ---------- Meldungen ---------- */
@@ -251,6 +372,7 @@ input:focus-visible{ outline:2px solid var(--cyan-ink); outline-offset:2px; }
   .is-scanned .scan-target,
   .wipe, .rise{ animation:none; }
   .readbar{ display:none; }
+  .theme-thumb{ transition:none; }
 }
 
 /* ---------- Schmale Fenster ---------- */

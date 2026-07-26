@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>(function(){try{var t=localStorage.getItem("pixelpdf-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);}}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PixelPDF — PDF to PNG in one request</title>
 <meta name="description" content="Turn a PDF into a PNG with one request. Built for Make and Zapier: about a minute to set up, nothing to configure. 200 free conversions, no card.">
@@ -91,22 +92,22 @@
   }
   /* Der Pro-Tarif wird nicht mit einem Aufkleber markiert, sondern indem er
      als einziger gedruckt ist statt bedruckt zu werden. */
-  .plan-pro{ background:var(--ink); border-color:var(--ink); color:#fff; }
+  .plan-pro{ background:var(--ink); border-color:var(--ink); color:var(--on-ink); }
   .plan h3{ font-size:17px; font-weight:700; }
   .plan-price{
     font-stretch:125%; font-weight:800; font-size:40px; letter-spacing:-.03em;
     line-height:1; margin:20px 0 8px;
   }
   .plan-price small{ font-stretch:100%; font-size:14px; font-weight:500; color:var(--ink-2); letter-spacing:0; }
-  .plan-pro .plan-price small{ color:#a9b0b7; }
+  .plan-pro .plan-price small{ color:var(--on-ink-3); }
   .plan-sub{ font-family:var(--mono); font-size:12px; color:var(--ink-3); margin-bottom:26px; }
-  .plan-pro .plan-sub{ color:#8d949b; }
+  .plan-pro .plan-sub{ color:var(--on-ink-4); }
   .plan-list{ display:grid; gap:11px; margin-bottom:30px; flex:1 1 auto; }
   .plan-list li{
     display:grid; grid-template-columns:14px 1fr; gap:11px; align-items:start;
     font-size:14.5px; color:var(--ink-2);
   }
-  .plan-pro .plan-list li{ color:#c3c9ce; }
+  .plan-pro .plan-list li{ color:var(--on-ink-2); }
   .plan-list li::before{ content:''; width:7px; height:7px; margin-top:8px; background:var(--cyan); }
   .plan-foot{ margin-top:22px; font-size:13px; color:var(--ink-3); max-width:70ch; }
 
@@ -150,6 +151,16 @@
     <div class="head-actions">
       <a href="login.html" class="btn btn-quiet btn-small">Log in</a>
       <a href="login.html" class="btn btn-solid btn-small">Get an API key</a>
+      <button type="button" class="theme-toggle" id="theme-toggle" aria-pressed="false" aria-label="Switch to dark theme">
+        <svg class="theme-icon theme-icon-sun" width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <circle cx="7" cy="7" r="3" fill="currentColor"/>
+          <path d="M7 .8v2.1M7 11.1v2.1M13.2 7h-2.1M2.9 7H.8M11.4 2.6l-1.5 1.5M4.1 9.9l-1.5 1.5M11.4 11.4l-1.5-1.5M4.1 4.1L2.6 2.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        <svg class="theme-icon theme-icon-moon" width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M12.6 8.5A5.6 5.6 0 1 1 5.5 1.4a4.5 4.5 0 0 0 7.1 7.1z" fill="currentColor"/>
+        </svg>
+        <span class="theme-thumb"></span>
+      </button>
     </div>
   </div>
 </header>
@@ -345,6 +356,7 @@ file:         <span class="v">invoice.pdf</span></pre>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-client.js"></script>
+<script src="theme.js"></script>
 <script>
   const scanSheet = document.getElementById("scan-sheet");
 

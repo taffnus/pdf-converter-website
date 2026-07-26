@@ -136,7 +136,7 @@ body{ line-height:1.65; }
 }
 .callout h3:first-child{ margin-top:0; }
 .callout p:last-child{ margin-bottom:0; }
-.callout.muted{ border-left-color:var(--rule); box-shadow:none; background:#fafbfa; }
+.callout.muted{ border-left-color:var(--rule); box-shadow:none; background:var(--well); }
 
 .form-fields{ font-family:var(--mono); font-size:13px; color:var(--ink-2); }
 .form-fields div{ padding:6px 0; }
@@ -148,16 +148,16 @@ body{ line-height:1.65; }
 
 /* ---------- Kontaktkarte am Ende ---------- */
 .contact-card{
-  background:var(--ink); color:#fff; border-radius:3px;
+  background:var(--ink); color:var(--on-ink); border-radius:3px;
   padding:26px 28px; margin-top:40px;
   display:flex; align-items:center; justify-content:space-between;
   gap:24px; flex-wrap:wrap;
 }
 .contact-card .ct-title{ font-stretch:125%; font-weight:700; font-size:17px; margin-bottom:5px; }
-.contact-card p{ color:#c3c9ce; font-size:14.5px; margin:0; }
+.contact-card p{ color:var(--on-ink-2); font-size:14.5px; margin:0; }
 /* .btn kommt aus site.css, hier nur die Farben fuer den dunklen Grund. */
-.contact-card .btn{ background:#fff; color:var(--ink); white-space:nowrap; flex-shrink:0; }
-.contact-card .btn:hover{ background:#e9ece8; text-decoration:none; }
+.contact-card .btn{ background:var(--on-ink); color:var(--ink); white-space:nowrap; flex-shrink:0; }
+.contact-card .btn:hover{ background:var(--on-ink-hover); text-decoration:none; }
 
 /* ---------- Fusszeile ---------- */
 .site-footer{
