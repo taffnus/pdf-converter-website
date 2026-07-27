@@ -313,6 +313,35 @@ input[type="email"], input[type="password"], input[type="text"]{
 input:focus{ outline:none; border-color:var(--ink); background:var(--sheet); }
 input:focus-visible{ outline:2px solid var(--cyan-ink); outline-offset:2px; }
 
+/* ---------- Passwort ein- und ausblenden ----------
+   Das Auge sitzt im Feld, nicht daneben: so bleibt die Feldbreite
+   identisch mit allen anderen Eingabefeldern. Der Schraegstrich
+   zeichnet sich ein und wieder aus, dieselbe Linienbewegung wie
+   ueberall sonst auf der Seite. */
+.pw-wrap{ position:relative; }
+.pw-wrap input{ display:block; padding-right:48px; }
+
+.pw-toggle{
+  position:absolute; top:0; right:0; width:44px; height:100%;
+  display:flex; align-items:center; justify-content:center;
+  background:none; border:none; padding:0; cursor:pointer;
+  color:var(--ink-3); transition:color .15s ease;
+}
+.pw-toggle:hover{ color:var(--ink); }
+/* Der Ring liegt innen, sonst ueberlagert er den Rahmen des Feldes. */
+.pw-toggle:focus-visible{ outline-offset:-5px; }
+.pw-toggle svg{ display:block; }
+
+.pw-slash{
+  stroke-dasharray:19; stroke-dashoffset:19;
+  transition:stroke-dashoffset .3s cubic-bezier(.32,0,.2,1);
+}
+.pw-toggle[aria-pressed="true"] .pw-slash{ stroke-dashoffset:0; }
+
+/* Edge blendet in Passwortfeldern ueber ::-ms-reveal ein eigenes Auge
+   ein. Sonst stuenden zwei nebeneinander im selben Feld. */
+input[type="password"]::-ms-reveal{ display:none; }
+
 /* ---------- Meldungen ---------- */
 .msg{ display:none; font-size:14px; padding:12px 15px; border-radius:2px; margin-bottom:20px; }
 .msg.error{ display:block; background:var(--alert-wash); border-left:3px solid var(--alert); color:var(--alert); }
@@ -373,6 +402,7 @@ input:focus-visible{ outline:2px solid var(--cyan-ink); outline-offset:2px; }
   .wipe, .rise{ animation:none; }
   .readbar{ display:none; }
   .theme-thumb{ transition:none; }
+  .pw-slash{ transition:none; }
 }
 
 /* ---------- Schmale Fenster ---------- */
