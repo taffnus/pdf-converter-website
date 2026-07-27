@@ -273,16 +273,18 @@ file:         <span class="v">invoice.pdf</span></pre>
 <pre class="codeblock"><span class="m">200</span> image/png        <span class="c">1 page</span>
 <span class="m">200</span> application/zip  <span class="c">2–5 pages</span>
 
+<span class="m">400</span> <span class="c">file is not a readable PDF</span>
 <span class="m">401</span> <span class="c">key missing or invalid</span>
 <span class="m">402</span> <span class="c">free credits used up</span>
 <span class="m">413</span> <span class="c">over the page or size limit</span>
-<span class="m">429</span> <span class="c">fair-use limit reached</span></pre>
+<span class="m">429</span> <span class="c">rate or fair-use limit reached</span></pre>
         </div>
       </div>
 
       <div class="notes">
         <div class="note"><span class="spec">Output</span><span>A single-page PDF returns one <code>image/png</code>. A multi-page PDF returns a <code>.zip</code> holding one PNG per page, in page order.</span></div>
         <div class="note"><span class="spec">Resolution</span><span>Every page renders at 200&nbsp;DPI, so an A4 page arrives at roughly <code>1654 × 2339</code> pixels. There is no setting to get wrong.</span></div>
+        <div class="note"><span class="spec">Rate limit</span><span>Up to <strong>30 conversions per minute</strong> per account. Going over returns <code>429</code> with a <code>Retry-After</code> header telling you how many seconds to wait. Normal scenarios never reach it.</span></div>
       </div>
     </div>
   </section>
